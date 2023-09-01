@@ -1,0 +1,46 @@
+extern InitWindow(width : int, height : int, title : i8 ptr) void;
+extern CloseWindow() void;
+extern WindowShouldClose() bool;
+extern BeginDrawing() void;
+extern EndDrawing() void;
+
+struct Color {
+    var r : i8
+    var g : i8
+    var b : i8
+    var a : i8
+}
+
+struct Vector2 {
+    var x : float
+    var y : float
+}
+
+struct Vector3 {
+    var x : float
+    var y : float
+    var z : float
+}
+
+struct Rectangle {
+    var x : float
+    var y : float
+    var width : float
+    var height : float
+}
+
+struct Image {
+    var data : int ptr
+    var width : int
+    var height : int
+    var mipmaps : int
+    var format : int
+}
+ 
+struct Texture {
+    var id : int
+    var width :int
+    var height : int
+    var mipmaps : int
+    var format : int
+}

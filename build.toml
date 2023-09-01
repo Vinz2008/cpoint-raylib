@@ -1,0 +1,6 @@
+[project]
+name = "test"
+homepage = "https://github.com/test"
+license = "GPL"
+type = "library"
+src_folder = "./"
