@@ -44,3 +44,6 @@ struct Texture {
     var mipmaps : int
     var format : int
 }
+
+extern ClearBackground(color : struct Color);
+extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
