@@ -50,3 +50,10 @@ extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : s
 extern DrawRectangle(posX : int, posY : int, width : int, height : int, color  : struct Color) void;
 extern IsKeyDown(key : int) bool;
 extern IsKeyPressed(key : int) bool;
+
+?[define KEY_RIGHT 262]
+?[define KEY_LEFT 263]
+?[define KEY_DOWN 264]
+?[define KEY_UP 265]
+?[define KEY_BACKSPACE 259]
+?[define KEY_ENTER 257]
