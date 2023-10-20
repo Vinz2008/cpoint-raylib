@@ -48,3 +48,5 @@ struct Texture {
 extern ClearBackground(color : struct Color);
 extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
 extern DrawRectangle(posX : int, posY : int, width : int, height : int, color  : struct Color) void;
+extern IsKeyDown(key : int) bool;
+extern IsKeyPressed(key : int) bool;
