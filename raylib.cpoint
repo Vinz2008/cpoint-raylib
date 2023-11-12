@@ -5,12 +5,6 @@
 ?[define KEY_DOWN 264]
 ?[define KEY_UP 265]
 
-extern InitWindow(width : int, height : int, title : i8 ptr) void;
-extern CloseWindow() void;
-extern WindowShouldClose() bool;
-extern BeginDrawing() void;
-extern EndDrawing() void;
-
 struct Color {
     var r : i8
     var g : i8
@@ -27,6 +21,13 @@ struct Vector3 {
     var x : float
     var y : float
     var z : float
+}
+
+struct Vector4 {
+    var x : float
+    var y : float
+    var z : float
+    var w : float
 }
 
 struct Rectangle {
@@ -52,9 +53,746 @@ struct Texture {
     var format : int
 }
 
-extern ClearBackground(color : struct Color);
-extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
-extern DrawRectangle(posX : int, posY : int, width : int, height : int, color  : struct Color) void;
-extern IsKeyDown(key : int) bool;
-extern IsKeyPressed(key : int) bool;
+struct TextureCubemap {
+    var id : int
+    var width :int
+    var height : int
+    var mipmaps : int
+    var format : int
+}
+
+struct Texture2D {
+    var id : int
+    var width :int
+    var height : int
+    var mipmaps : int
+    var format : int
+}
+
+struct Camera {
+    var position : struct Vector3
+    var target : struct Vector3
+    var up : struct Vector3
+    var fovy : float
+    var projection : int
+}
+
+
+struct Camera3D {
+    var position : struct Vector3
+    var target : struct Vector3
+    var up : struct Vector3
+    var fovy : float
+    var projection : int
+}
+
+struct Camera2D {
+    var offset : struct Vector2
+    var target : struct Vector2
+    var rotation : float
+    var zoom : float
+}
+
+struct RenderTexture2D {
+    var id : u32
+    var texture : struct Texture
+    var depth : struct Texture
+}
+
+struct Shader {
+    var id : u32
+    var locs : int ptr
+}
+
+struct Matrix {
+    var m0 : float
+    var m4 : float
+    var m8 : float
+    var m12 : float
+    var m1 : float
+    var m5 : float
+    var m9 : float
+    var m13 : float
+    var m2 : float
+    var m6 : float
+    var m10 : float
+    var m14 : float
+    var m3 : float
+    var m7 : float
+    var m11 : float
+    var m15 : float
+}
+
+struct VrStereoConfig {
+    var projection[2] : struct Matrix
+    var viewOffset[2] : struct Matrix
+    var leftLensCenter[2] : float
+    var rightLensCenter[2] : float
+    var leftScreenCenter[2] : float
+    var rightScreenCenter[2] : float
+    var scale[2] : float
+    var scaleIn[2] : float
+}
+
+struct VrDeviceInfo {
+    var hResolution : int
+    var vResolution : int
+    var hScreenSize : float
+    var vScreenSize : float
+    var vScreenCenter : float
+    var eyeToScreenDistance : float
+    var lensSeparationDistance : float
+    var interpupillaryDistance : float
+    var lensDistortionValues[4] : float
+    var chromaAbCorrection[4] : float
+}
+
+struct Ray {
+    var position : struct Vector3
+    var direction : struct Vector3
+}
+
+struct FilePathList {
+    var capacity : u32
+    var count : u32
+    var paths : i8 ptr ptr
+}
+
+struct GlyphInfo {
+    var value : int
+    var offsetX : int
+    var offsetY : int
+    var advanceX : int
+    var image : struct Image
+}
+
+struct Font {
+    var baseSize : int
+    var glyphCount : int
+    var glyphPadding : int
+    var texture : struct Texture2D
+    var recs : struct Rectangle ptr
+    var glyphs : struct GlyphInfo ptr
+}
+
+struct NPatchInfo {
+    var source : struct Rectangle
+    var left : int
+    var top : int
+    var right : int
+    var bottom : int
+    var layout : int
+}
+
+struct Mesh {
+    var vertexCount : int
+    var triangleCount : int
+    var vertices : float ptr
+    var texcoords : float ptr
+    var texcoords2 : float ptr
+    var normals : float ptr
+    var tangents : float ptr
+    var colors : u8 ptr
+    var indices : u16 ptr
+    var animVertices : float ptr
+    var animNormals : float ptr
+    var boneIds : u8 ptr
+    var boneWeights : float ptr
+    var vaoId: u32
+    var vboId : u32 ptr
+}
+
+struct MaterialMap {
+    var texture : struct Texture2D
+    var color : struct Color
+    var value : float
+}
+
+struct Material {
+    var shader : struct Shader
+    var maps : struct MaterialMap ptr
+    var params[4] : float
+}
+
+struct BoneInfo {
+    var name[32] : i8
+    var parent : int
+}
+
+struct Transform {
+    var translation : struct Vector3
+    var rotation : struct Vector4
+    var scale : struct Vector3
+}
+
+struct Model {
+    var transform : struct Matrix
+    var meshCount : int
+    var materialCount : int
+    var meshes : struct Mesh ptr
+    var materials : struct Material ptr
+    var meshMaterial : int ptr
+    var boneCount : int
+    var bones : struct BoneInfo ptr
+    var bindPose : struct Transform ptr
+}
+
+struct BoundingBox {
+    var min : struct Vector3
+    var max : struct Vector3
+}
+
+struct ModelAnimation {
+    var boneCount : int
+    var frameCount : int
+    var bones : struct BoneInfo ptr
+    var framePoses : struct Transform ptr ptr
+}
+
+struct RayCollision {
+    var hit : i8
+    var distance : float
+    var point : struct Vector3
+    var normal : struct Vector3
+}
+
+struct Wave {
+    var frameCount : u32
+    var sampleRate : u32
+    var sampleSize : u32
+    var channels : u32 
+    var data : void ptr
+}
+// opaque
+struct rAudioBuffer {
+    var a : int
+}
+// opaque
+struct rAudioProcessor {
+    var a : int
+}
+
+
+struct AudioStream {
+    var buffer : struct rAudioBuffer ptr
+    var processor : struct rAudioProcessor ptr
+    var sampleRate : u32
+    var sampleSize : u32
+    var channels : u32
+}
+
+struct Sound {
+    var stream : struct AudioStream
+    var frameCount : u32
+}
+
+struct Music {
+    var stream : struct AudioStream
+    var frameCount : u32
+    var looping : i8
+    var ctxType : int
+    var ctxData : void ptr
+}
+
+extern InitWindow(width : int, height : int, title : i8 ptr) void;
+extern WindowShouldClose() int;
+extern CloseWindow() void;
+extern IsWindowReady() int;
+extern IsWindowFullscreen() int;
+extern IsWindowHidden() int;
+extern IsWindowMinimized() int;
+extern IsWindowMaximized() int;
+extern IsWindowFocused() int;
+extern IsWindowResized() int;
+extern IsWindowState() int;
+extern SetWindowState(flags : u32) void;
+extern ClearWindowState(flags : u32) void;
+extern ToggleFullscreen() void;
+extern MaximizeWindow() void;
+extern MinimizeWindow() void;
+extern RestoreWindow() void;
+extern SetWindowIcon(image : struct Image) void;
+extern SetWindowIcons(images : struct Image ptr, count : int) void;
+extern SetWindowTitle(title : i8 ptr) void;
+extern SetWindowPosition(x : int, y : int) void;
+extern SetWindowMonitor(monitor : int) void;
+extern SetWindowMinSize(width : int, height : int) void;
+extern SetWindowSize(width : int, height : int) void;
+extern SetWindowOpacity(opacity : float) void;
+extern GetWindowHandle() void ptr;
+extern GetScreenWidth() int;
+extern GetScreenHeight() int;
+extern GetRenderWidth() int;
+extern GetRenderHeight() int;
+extern GetMonitorCount() int;
+extern GetCurrentMonitor() int;
+extern GetMonitorPosition(monitor : int) struct Vector2;
+extern GetMonitorWidth(monitor : int) int;
+extern GetMonitorHeight(monitor : int) int;
+extern GetMonitorPhysicalWidth(monitor : int) int;
+extern GetMonitorPhysicalHeight(monitor : int) int;
+extern GetMonitorRefreshRate(monitor : int) int;
+extern GetWindowPosition() struct Vector2;
+extern GetWindowScaleDPI() struct Vector2;
+extern GetMonitorName(monitor : int) i8 ptr;
+extern SetClipboardText(text : i8 ptr) void;
+extern GetClipboardText() i8 ptr;
+extern EnableEventWaiting() void;
+extern DisableEventWaiting() void;
+extern SwapScreenBuffer() void;
+extern PollInputEvents() void;
+extern WaitTime(seconds : double) void;
+extern ShowCursor() void;
+extern HideCursor() void;
+extern IsCursorHidden() int;
+extern EnableCursor() void;
+extern DisableCursor() void;
+extern IsCursorOnScreen() int;
+extern ClearBackground(color : struct Color) void;
+extern BeginDrawing() void;
+extern EndDrawing() void;
+extern BeginMode2D(camera : struct Camera2D) void;
+extern EndMode2D() void;
+extern BeginMode3D(camera : struct Camera3D) void;
+extern EndMode3D() void;
+extern BeginTextureMode(target : struct RenderTexture2D) void;
+extern EndTextureMode() void;
+extern BeginShaderMode(shader : struct Shader) void;
+extern EndShaderMode() void;
+extern BeginBlendMode(mode : int) void;
+extern EndBlendMode() void;
+extern BeginScissorMode(x : int, y : int, width : int, height : int) void;
+extern EndScissorMode() void;
+extern BeginVrStereoMode(config : struct VrStereoConfig) void;
+extern EndVrStereoMode() void;
+extern LoadVrStereoConfig(device : struct VrDeviceInfo) struct VrStereoConfig;
+extern UnloadVrStereoConfig(config : struct VrStereoConfig) void;
+extern LoadShader(vsFileName : i8 ptr, fsFileName : i8 ptr) struct Shader;
+extern LoadShaderFromMemory(vsCode : i8 ptr, fsCode : i8 ptr) struct Shader;
+extern IsShaderReady() int;
+extern GetShaderLocation(shader : struct Shader, uniformName : i8 ptr) int;
+extern GetShaderLocationAttrib(shader : struct Shader, attribName : i8 ptr) int;
+extern SetShaderValue(shader : struct Shader, locIndex : int, value : void ptr, uniformType : int) void;
+extern SetShaderValueV(shader : struct Shader, locIndex : int, value : void ptr, uniformType : int, count : int) void;
+extern SetShaderValueMatrix(shader : struct Shader, locIndex : int, mat : struct Matrix) void;
+extern SetShaderValueTexture(shader : struct Shader, locIndex : int, texture : struct Texture2D) void;
+extern UnloadShader(shader : struct Shader) void;
+extern GetMouseRay(mousePosition : struct Vector2, camera : struct Camera) struct Ray;
+extern GetCameraMatrix(camera : struct Camera) struct Matrix;
+extern GetCameraMatrix2D(camera : struct Camera2D) struct Matrix;
+extern GetWorldToScreen(position : struct Vector3, camera : struct Camera) struct Vector2;
+extern GetScreenToWorld2D(position : struct Vector2, camera : struct Camera2D) struct Vector2;
+extern GetWorldToScreenEx(position : struct Vector3, camera : struct Camera, width : int, height : int) struct Vector2;
+extern GetWorldToScreen2D(position : struct Vector2, camera : struct Camera2D) struct Vector2;
+extern SetTargetFPS(fps : int) void;
+extern GetFPS() int;
 extern GetFrameTime() float;
+extern GetTime() double;
+extern GetRandomValue(min : int, max : int) int;
+extern SetRandomSeed(seed : u32) void;
+extern TakeScreenshot(fileName : i8 ptr) void;
+extern SetConfigFlags(flags : u32) void;
+extern TraceLog(logLevel : int, text : i8 ptr ...) void;
+extern SetTraceLogLevel(logLevel : int) void;
+extern MemAlloc(size : u32) void ptr;
+extern MemRealloc(pointer : void ptr, size : u32) void ptr;
+extern MemFree(pointer : void ptr) void;
+extern OpenURL(url : i8 ptr) void;
+extern LoadFileData(fileName : i8 ptr, bytesRead : u32 ptr) i8 ptr;
+extern UnloadFileData(data : i8 ptr) void;
+extern SaveFileData() int;
+extern ExportDataAsCode() int;
+extern LoadFileText(fileName : i8 ptr) i8 ptr;
+extern UnloadFileText(text : i8 ptr) void;
+extern SaveFileText() int;
+extern FileExists() int;
+extern DirectoryExists() int;
+extern IsFileExtension() int;
+extern GetFileLength(fileName : i8 ptr) int;
+extern GetFileExtension(fileName : i8 ptr) i8 ptr;
+extern GetFileName(filePath : i8 ptr) i8 ptr;
+extern GetFileNameWithoutExt(filePath : i8 ptr) i8 ptr;
+extern GetDirectoryPath(filePath : i8 ptr) i8 ptr;
+extern GetPrevDirectoryPath(dirPath : i8 ptr) i8 ptr;
+extern GetWorkingDirectory() i8 ptr;
+extern GetApplicationDirectory() i8 ptr;
+extern ChangeDirectory() int;
+extern IsPathFile() int;
+extern LoadDirectoryFiles(dirPath : i8 ptr) struct FilePathList;
+extern LoadDirectoryFilesEx(basePath : i8 ptr, filter : i8 ptr, scanSubdirs : bool) struct FilePathList;
+extern UnloadDirectoryFiles(files : struct FilePathList) void;
+extern IsFileDropped() int;
+extern LoadDroppedFiles() struct FilePathList;
+extern UnloadDroppedFiles(files : struct FilePathList) void;
+extern GetFileModTime(fileName : i8 ptr) i64;
+extern CompressData(data : i8 ptr, dataSize : int, compDataSize : int ptr) i8 ptr;
+extern DecompressData(compData : i8 ptr, compDataSize : int, dataSize : int ptr) i8 ptr;
+extern EncodeDataBase64(data : i8 ptr, dataSize : int, outputSize : int ptr) i8 ptr;
+extern DecodeDataBase64(data : i8 ptr, outputSize : int ptr) i8 ptr;
+extern IsKeyPressed(key : int) bool;
+extern IsKeyDown(key : int) bool;
+extern IsKeyReleased(key : int) int;
+extern IsKeyUp(key : int) int;
+extern SetExitKey(key : int) void;
+extern GetKeyPressed() int;
+extern GetCharPressed() int;
+extern IsGamepadAvailable(gamepad : int) int;
+extern GetGamepadName(gamepad : int) i8 ptr;
+extern IsGamepadButtonPressed(gamepad : int, button : int) int;
+extern IsGamepadButtonDown(gamepad : int, button : int) int;
+extern IsGamepadButtonReleased(gamepad : int, button : int) int;
+extern GetGamepadAxisCount(gamepad : int) int;
+extern GetGamepadAxisMovement(gamepad : int, axis : int) float;
+extern SetGamepadMappings(mappings : i8 ptr) int;
+extern IsMouseButtonPressed(button : int) int;
+extern IsMouseButtonUp(button : int) int;
+extern GetMouseX() int;
+extern GetMouseY() int;
+extern GetMousePosition() struct Vector2;
+extern GetMouseDelta() struct Vector2;
+extern SetMousePosition(x : int, y : int) void;
+extern SetMouseOffset(offsetX : int, offsetY : int) void;
+extern SetMouseScale(scaleX : float, scaleY : float) void;
+extern GetMouseWheelMove() float;
+extern GetMouseWheelMoveV() struct Vector2;
+extern SetMouseCursor(cursor : int) void;
+extern GetTouchX() int;
+extern GetTouchY() int;
+extern GetTouchPosition(index : int) struct Vector2;
+extern GetTouchPointId(index : int) int;
+extern GetTouchPointCount() int;
+extern SetGesturesEnabled(flags : u32) void;
+extern IsGestureDetected(gesture : u32) int;
+extern GetGestureDetected() int;
+extern GetGestureHoldDuration() float;
+extern GetGestureDragVector() struct Vector2;
+extern GetGestureDragAngle() float;
+extern GetGesturePinchVector() struct Vector2;
+extern GetGesturePinchAngle() float;
+extern UpdateCamera(camera : struct Camera ptr, mode : int) void;
+extern UpdateCameraPro(camera : struct Camera ptr, movement : struct Vector3, rotation : struct Vector3, zoom : float) void;
+extern SetShapesTexture(texture : struct Texture2D, source : struct Rectangle) void;
+extern DrawPixel(posX : int, posY : int, color : struct Color) void;
+extern DrawPixelV(position : struct Vector2, color : struct Color) void;
+extern DrawLine(startPosX : int, startPosY : int, endPosX : int, endPosY : int, color : struct Color) void;
+extern DrawLineV(startPos : struct Vector2, endPos : struct Vector2, color : struct Color) void;
+extern DrawLineEx(startPos : struct Vector2, endPos : struct Vector2, thick : float, color : struct Color) void;
+extern DrawLineBezier(startPos : struct Vector2, endPos : struct Vector2, thick : float, color : struct Color) void;
+extern DrawLineBezierQuad(startPos : struct Vector2, endPos : struct Vector2, controlPos : struct Vector2, thick : float, color : struct Color) void;
+extern DrawLineBezierCubic(startPos : struct Vector2, endPos : struct Vector2, startControlPos : struct Vector2, endControlPos : struct Vector2, thick : float, color : struct Color) void;
+extern DrawLineStrip(points : struct Vector2 ptr, pointCount : int, color : struct Color) void;
+extern DrawCircle(centerX : int, centerY : int, radius : float, color : struct Color) void;
+extern DrawCircleSector(center : struct Vector2, radius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
+extern DrawCircleSectorLines(center : struct Vector2, radius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
+extern DrawCircleGradient(centerX : int, centerY : int, radius : float, color1 : struct Color, color2 : struct Color) void;
+extern DrawCircleV(center : struct Vector2, radius : float, color : struct Color) void;
+extern DrawCircleLines(centerX : int, centerY : int, radius : float, color : struct Color) void;
+extern DrawEllipse(centerX : int, centerY : int, radiusH : float, radiusV : float, color : struct Color) void;
+extern DrawEllipseLines(centerX : int, centerY : int, radiusH : float, radiusV : float, color : struct Color) void;
+extern DrawRing(center : struct Vector2, innerRadius : float, outerRadius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
+extern DrawRingLines(center : struct Vector2, innerRadius : float, outerRadius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
+extern DrawRectangle(posX : int, posY : int, width : int, height : int, color : struct Color) void;
+extern DrawRectangleV(position : struct Vector2, size : struct Vector2, color : struct Color) void;
+extern DrawRectangleRec(rec : struct Rectangle, color : struct Color) void;
+extern DrawRectanglePro(rec : struct Rectangle, origin : struct Vector2, rotation : float, color : struct Color) void;
+extern DrawRectangleGradientV(posX : int, posY : int, width : int, height : int, color1 : struct Color, color2 : struct Color) void;
+extern DrawRectangleGradientH(posX : int, posY : int, width : int, height : int, color1 : struct Color, color2 : struct Color) void;
+extern DrawRectangleGradientEx(rec : struct Rectangle, col1 : struct Color, col2 : struct Color, col3 : struct Color, col4 : struct Color) void;
+extern DrawRectangleLines(posX : int, posY : int, width : int, height : int, color : struct Color) void;
+extern DrawRectangleLinesEx(rec : struct Rectangle, lineThick : float, color : struct Color) void;
+extern DrawRectangleRounded(rec : struct Rectangle, roundness : float, segments : int, color : struct Color) void;
+extern DrawRectangleRoundedLines(rec : struct Rectangle, roundness : float, segments : int, lineThick : float, color : struct Color) void;
+extern DrawTriangle(v1 : struct Vector2, v2 : struct Vector2, v3 : struct Vector2, color : struct Color) void;
+extern DrawTriangleLines(v1 : struct Vector2, v2 : struct Vector2, v3 : struct Vector2, color : struct Color) void;
+extern DrawTriangleFan(points : struct Vector2 ptr, pointCount : int, color : struct Color) void;
+extern DrawTriangleStrip(points : struct Vector2 ptr, pointCount : int, color : struct Color) void;
+extern DrawPoly(center : struct Vector2, sides : int, radius : float, rotation : float, color : struct Color) void;
+extern DrawPolyLines(center : struct Vector2, sides : int, radius : float, rotation : float, color : struct Color) void;
+extern DrawPolyLinesEx(center : struct Vector2, sides : int, radius : float, rotation : float, lineThick : float, color : struct Color) void;
+extern CheckCollisionRecs(rec1 : struct Rectangle, rec2 : struct Rectangle) int;
+extern CheckCollisionCircles(center1 : struct Vector2, radius1 : float, center2 : struct Vector2) int;
+extern CheckCollisionCircleRec(center : struct Vector2, radius : float, rec : struct Rectangle) int;
+extern CheckCollisionPointRec(point : struct Vector2, rec : struct Rectangle) int;
+extern CheckCollisionPointCircle(point : struct Vector2, center : struct Vector2, radius : float) int;
+extern CheckCollisionPointTriangle(point : struct Vector2, p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2) int;
+extern CheckCollisionPointPoly(point : struct Vector2, points : struct Vector2 ptr, pointCount : int) int;
+extern CheckCollisionLines(startPos1 : struct Vector2, endPos1 : struct Vector2, startPos2 : struct Vector2, endPos2 : struct Vector2, collisionPoint : struct Vector2 ptr) int;
+extern CheckCollisionPointLine(point : struct Vector2, p1 : struct Vector2, p2 : struct Vector2, threshold : int) int;
+extern GetCollisionRec(rec1 : struct Rectangle, rec2 : struct Rectangle) struct Rectangle;
+extern LoadImage(fileName : i8 ptr) struct Image;
+extern LoadImageRaw(fileName : i8 ptr, width : int, height : int, format : int, headerSize : int) struct Image;
+extern LoadImageAnim(fileName : i8 ptr, frames : int ptr) struct Image;
+extern LoadImageFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int) struct Image;
+extern LoadImageFromTexture(texture : struct Texture2D) struct Image;
+extern LoadImageFromScreen() struct Image;
+extern IsImageReady(image : struct Image) int;
+extern UnloadImage(image : struct Image) void;
+extern ExportImage(image : struct Image, fileName : i8 ptr) int;
+extern ExportImageAsCode(image : struct Image, fileName : i8 ptr) int;
+extern GenImageColor(width : int, height : int, color : struct Color) struct Image;
+extern GenImageGradientV(width : int, height : int, top : struct Color, bottom : struct Color) struct Image;
+extern GenImageGradientH(width : int, height : int, left : struct Color, right : struct Color) struct Image;
+extern GenImageGradientRadial(width : int, height : int, density : float, inner : struct Color, outer : struct Color) struct Image;
+extern GenImageChecked(width : int, height : int, checksX : int, checksY : int, col1 : struct Color, col2 : struct Color) struct Image;
+extern GenImageWhiteNoise(width : int, height : int, factor : float) struct Image;
+extern GenImagePerlinNoise(width : int, height : int, offsetX : int, offsetY : int, scale : float) struct Image;
+extern GenImageCellular(width : int, height : int, tileSize : int) struct Image;
+extern GenImageText(width : int, height : int, text : i8 ptr) struct Image;
+extern ImageCopy(image : struct Image) struct Image;
+extern ImageFromImage(image : struct Image, rec : struct Rectangle) struct Image;
+extern ImageText(text : i8 ptr, fontSize : int, color : struct Color) struct Image;
+extern ImageTextEx(font : struct Font, text : i8 ptr, fontSize : float, spacing : float, tint : struct Color) struct Image;
+extern ImageFormat(image : struct Image ptr, newFormat : int) void;
+extern ImageToPOT(image : struct Image ptr, fill : struct Color) void;
+extern ImageCrop(image : struct Image ptr, crop : struct Rectangle) void;
+extern ImageAlphaCrop(image : struct Image ptr, threshold : float) void;
+extern ImageAlphaClear(image : struct Image ptr, color : struct Color, threshold : float) void;
+extern ImageAlphaMask(image : struct Image ptr, alphaMask : struct Image) void;
+extern ImageAlphaPremultiply(image : struct Image ptr) void;
+extern ImageBlurGaussian(image : struct Image ptr, blurSize : int) void;
+extern ImageResize(image : struct Image ptr, newWidth : int, newHeight : int) void;
+extern ImageResizeNN(image : struct Image ptr, newWidth : int, newHeight : int) void;
+extern ImageResizeCanvas(image : struct Image ptr, newWidth : int, newHeight : int, offsetX : int, offsetY : int, fill : struct Color) void;
+extern ImageMipmaps(image : struct Image ptr) void;
+extern ImageDither(image : struct Image ptr, rBpp : int, gBpp : int, bBpp : int, aBpp : int) void;
+extern ImageFlipVertical(image : struct Image ptr) void;
+extern ImageFlipHorizontal(image : struct Image ptr) void;
+extern ImageRotateCW(image : struct Image ptr) void;
+extern ImageRotateCCW(image : struct Image ptr) void;
+extern ImageColorTint(image : struct Image ptr, color : struct Color) void;
+extern ImageColorInvert(image : struct Image ptr) void;
+extern ImageColorGrayscale(image : struct Image ptr) void;
+extern ImageColorContrast(image : struct Image ptr, contrast : float) void;
+extern ImageColorBrightness(image : struct Image ptr, brightness : int) void;
+extern ImageColorReplace(image : struct Image ptr, color : struct Color, replace : struct Color) void;
+extern LoadImageColors(image : struct Image) struct Color ptr;
+extern LoadImagePalette(image : struct Image, maxPaletteSize : int, colorCount : int ptr) struct Color ptr;
+extern UnloadImageColors(colors : struct Color ptr) void;
+extern UnloadImagePalette(colors : struct Color ptr) void;
+extern GetImageAlphaBorder(image : struct Image, threshold : float) struct Rectangle;
+extern GetImageColor(image : struct Image, x : int, y : int) struct Color;
+extern ImageClearBackground(dst : struct Image ptr, color : struct Color) void;
+extern ImageDrawPixel(dst : struct Image ptr, posX : int, posY : int, color : struct Color) void;
+extern ImageDrawPixelV(dst : struct Image ptr, position : struct Vector2, color : struct Color) void;
+extern ImageDrawLine(dst : struct Image ptr, startPosX : int, startPosY : int, endPosX : int, endPosY : int, color : struct Color) void;
+extern ImageDrawLineV(dst : struct Image ptr, start : struct Vector2, end : struct Vector2, color : struct Color) void;
+extern ImageDrawCircle(dst : struct Image ptr, centerX : int, centerY : int, radius : int, color : struct Color) void;
+extern ImageDrawCircleV(dst : struct Image ptr, center : struct Vector2, radius : int, color : struct Color) void;
+extern ImageDrawCircleLines(dst : struct Image ptr, centerX : int, centerY : int, radius : int, color : struct Color) void;
+extern ImageDrawCircleLinesV(dst : struct Image ptr, center : struct Vector2, radius : int, color : struct Color) void;
+extern ImageDrawRectangle(dst : struct Image ptr, posX : int, posY : int, width : int, height : int, color : struct Color) void;
+extern ImageDrawRectangleV(dst : struct Image ptr, position : struct Vector2, size : struct Vector2, color : struct Color) void;
+extern ImageDrawRectangleRec(dst : struct Image ptr, rec : struct Rectangle, color : struct Color) void;
+extern ImageDrawRectangleLines(dst : struct Image ptr, rec : struct Rectangle, thick : int, color : struct Color) void;
+extern ImageDraw(dst : struct Image ptr, src : struct Image, srcRec : struct Rectangle, dstRec : struct Rectangle, tint : struct Color) void;
+extern ImageDrawText(dst : struct Image ptr, text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
+extern ImageDrawTextEx(dst : struct Image ptr, font : struct Font, text : i8 ptr, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
+extern LoadTexture(fileName : i8 ptr) struct Texture2D;
+extern LoadTextureFromImage(image : struct Image) struct Texture2D;
+extern LoadTextureCubemap(image : struct Image, layout : int) struct TextureCubemap;
+extern LoadRenderTexture(width : int, height : int) struct RenderTexture2D;
+extern IsTextureReady(texture : struct Texture2D) int;
+extern UnloadTexture(texture : struct Texture2D) void;
+extern UnloadRenderTexture(target : struct RenderTexture2D) void;
+extern UpdateTexture(texture : struct Texture2D, pixels : void ptr) void;
+extern UpdateTextureRec(texture : struct Texture2D, rec : struct Rectangle, pixels : void ptr) void;
+extern GenTextureMipmaps(texture : struct Texture2D ptr) void;
+extern SetTextureFilter(texture : struct Texture2D, filter : int) void;
+extern SetTextureWrap(texture : struct Texture2D, wrap : int) void;
+extern DrawTexture(texture : struct Texture2D, posX : int, posY : int, tint : struct Color) void;
+extern DrawTextureV(texture : struct Texture2D, position : struct Vector2, tint : struct Color) void;
+extern DrawTextureEx(texture : struct Texture2D, position : struct Vector2, rotation : float, scale : float, tint : struct Color) void;
+extern DrawTextureRec(texture : struct Texture2D, source : struct Rectangle, position : struct Vector2, tint : struct Color) void;
+extern DrawTexturePro(texture : struct Texture2D, source : struct Rectangle, dest : struct Rectangle, origin : struct Vector2, rotation : float, tint : struct Color) void;
+extern DrawTextureNPatch(texture : struct Texture2D, nPatchInfo : struct NPatchInfo, dest : struct Rectangle, origin : struct Vector2, rotation : float, tint : struct Color) void;
+extern Fade(color : struct Color, alpha : float) struct Color;
+extern ColorToInt(color : struct Color) int;
+extern ColorNormalize(color : struct Color) struct Vector4;
+extern ColorFromNormalized(normalized : struct Vector4) struct Color;
+extern ColorToHSV(color : struct Color) struct Vector3;
+extern ColorFromHSV(hue : float, saturation : float, value : float) struct Color;
+extern ColorTint(color : struct Color, tint : struct Color) struct Color;
+extern ColorBrightness(color : struct Color, factor : float) struct Color;
+extern ColorContrast(color : struct Color, contrast : float) struct Color;
+extern ColorAlpha(color : struct Color, alpha : float) struct Color;
+extern ColorAlphaBlend(dst : struct Color, src : struct Color, tint : struct Color) struct Color;
+extern GetColor(hexValue : u32) struct Color;
+extern GetPixelColor(srcPtr : void ptr, format : int) struct Color;
+extern SetPixelColor(dstPtr : void ptr, color : struct Color, format : int) void;
+extern GetPixelDataSize(width : int, height : int, format : int) int;
+extern GetFontDefault() struct Font;
+extern LoadFont(fileName : i8 ptr) struct Font;
+extern LoadFontEx(fileName : i8 ptr, fontSize : int, fontChars : int ptr, glyphCount : int) struct Font;
+extern LoadFontFromImage(image : struct Image, key : struct Color, firstChar : int) struct Font;
+extern LoadFontFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int, fontSize : int, fontChars : int ptr, glyphCount : int) struct Font;
+extern IsFontReady(font : struct Font) int;
+extern LoadFontData(fileData : i8 ptr, dataSize : int, fontSize : int, fontChars : int ptr, glyphCount : int, type : int) struct GlyphInfo ptr;
+extern GenImageFontAtlas(chars : struct GlyphInfo ptr, recs : struct Rectangle ptr ptr, glyphCount : int, fontSize : int, padding : int, packMethod : int) struct Image;
+extern UnloadFontData(chars : struct GlyphInfo ptr, glyphCount : int) void;
+extern UnloadFont(font : struct Font) void;
+extern ExportFontAsCode(font : struct Font, fileName : i8 ptr) int;
+extern DrawFPS(posX : int, posY : int) void;
+extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
+extern DrawTextEx(font : struct Font, text : i8 ptr, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
+extern DrawTextPro(font : struct Font, text : i8 ptr, position : struct Vector2, origin : struct Vector2, rotation : float, fontSize : float, spacing : float, tint : struct Color) void;
+extern DrawTextCodepoint(font : struct Font, codepoint : int, position : struct Vector2, fontSize : float, tint : struct Color) void;
+extern DrawTextCodepoints(font : struct Font, codepoints : int ptr, count : int, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
+extern MeasureText(text : i8 ptr, fontSize : int) int;
+extern MeasureTextEx(font : struct Font, text : i8 ptr, fontSize : float, spacing : float) struct Vector2;
+extern GetGlyphIndex(font : struct Font, codepoint : int) int;
+extern GetGlyphInfo(font : struct Font, codepoint : int) struct GlyphInfo;
+extern GetGlyphAtlasRec(font : struct Font, codepoint : int) struct Rectangle;
+extern LoadUTF8(codepoints : int ptr, length : int) i8 ptr;
+extern UnloadUTF8(text : i8 ptr) void;
+extern LoadCodepoints(text : i8 ptr, count : int ptr) int ptr;
+extern UnloadCodepoints(codepoints : int ptr) void;
+extern GetCodepointCount(text : i8 ptr) int;
+extern GetCodepoint(text : i8 ptr, codepointSize : int ptr) int;
+extern GetCodepointNext(text : i8 ptr, codepointSize : int ptr) int;
+extern GetCodepointPrevious(text : i8 ptr, codepointSize : int ptr) int;
+extern CodepointToUTF8(codepoint : int, utf8Size : int ptr) i8 ptr;
+extern TextCopy(dst : i8 ptr, src : i8 ptr) int;
+extern TextIsEqual(text1 : i8 ptr, text2 : i8 ptr) int;
+extern TextLength(text : i8 ptr) u32;
+// extern TextFormat(text : i8 ptr, ...) i8 ptr;
+extern TextSubtext(text : i8 ptr, position : int, length : int) i8 ptr;
+extern TextReplace(text : i8 ptr, replace : i8 ptr, by : i8 ptr) i8 ptr;
+extern TextInsert(text : i8 ptr, insert : i8 ptr, position : int) i8 ptr;
+extern TextJoin(textList : i8 ptr ptr, count : int, delimiter : i8 ptr) i8 ptr;
+extern TextSplit(text : i8 ptr, delimiter : i8, count : int ptr) i8 ptr ptr;
+extern TextAppend(text : i8 ptr, append : i8 ptr, position : int ptr) void;
+extern TextFindIndex(text : i8 ptr, find : i8 ptr) int;
+extern TextToUpper(text : i8 ptr) i8 ptr;
+extern TextToLower(text : i8 ptr) i8 ptr;
+extern TextToPascal(text : i8 ptr) i8 ptr;
+extern TextToInteger(text : i8 ptr) int;
+extern DrawLine3D(startPos : struct Vector3, endPos : struct Vector3, color : struct Color) void;
+extern DrawPoint3D(position : struct Vector3, color : struct Color) void;
+extern DrawCircle3D(center : struct Vector3, radius : float, rotationAxis : struct Vector3, rotationAngle : float, color : struct Color) void;
+extern DrawTriangle3D(v1 : struct Vector3, v2 : struct Vector3, v3 : struct Vector3, color : struct Color) void;
+extern DrawTriangleStrip3D(points : struct Vector3 ptr, pointCount : int, color : struct Color) void;
+extern DrawCube(position : struct Vector3, width : float, height : float, length : float, color : struct Color) void;
+extern DrawCubeV(position : struct Vector3, size : struct Vector3, color : struct Color) void;
+extern DrawCubeWires(position : struct Vector3, width : float, height : float, length : float, color : struct Color) void;
+extern DrawCubeWiresV(position : struct Vector3, size : struct Vector3, color : struct Color) void;
+extern DrawSphere(centerPos : struct Vector3, radius : float, color : struct Color) void;
+extern DrawSphereEx(centerPos : struct Vector3, radius : float, rings : int, slices : int, color : struct Color) void;
+extern DrawSphereWires(centerPos : struct Vector3, radius : float, rings : int, slices : int, color : struct Color) void;
+extern DrawCylinder(position : struct Vector3, radiusTop : float, radiusBottom : float, height : float, slices : int, color : struct Color) void;
+extern DrawCylinderEx(startPos : struct Vector3, endPos : struct Vector3, startRadius : float, endRadius : float, sides : int, color : struct Color) void;
+extern DrawCylinderWires(position : struct Vector3, radiusTop : float, radiusBottom : float, height : float, slices : int, color : struct Color) void;
+extern DrawCylinderWiresEx(startPos : struct Vector3, endPos : struct Vector3, startRadius : float, endRadius : float, sides : int, color : struct Color) void;
+extern DrawCapsule(startPos : struct Vector3, endPos : struct Vector3, radius : float, slices : int, rings : int, color : struct Color) void;
+extern DrawCapsuleWires(startPos : struct Vector3, endPos : struct Vector3, radius : float, slices : int, rings : int, color : struct Color) void;
+extern DrawPlane(centerPos : struct Vector3, size : struct Vector2, color : struct Color) void;
+extern DrawRay(ray : struct Ray, color : struct Color) void;
+extern DrawGrid(slices : int, spacing : float) void;
+extern LoadModel(fileName : i8 ptr) struct Model;
+extern LoadModelFromMesh(mesh : struct Mesh) struct Model;
+extern IsModelReady(model : struct Model) int;
+extern UnloadModel(model : struct Model) void;
+extern GetModelBoundingBox(model : struct Model) struct BoundingBox;
+extern DrawModel(model : struct Model, position : struct Vector3, scale : float, tint : struct Color) void;
+extern DrawModelEx(model : struct Model, position : struct Vector3, rotationAxis : struct Vector3, rotationAngle : float, scale : struct Vector3, tint : struct Color) void;
+extern DrawModelWires(model : struct Model, position : struct Vector3, scale : float, tint : struct Color) void;
+extern DrawModelWiresEx(model : struct Model, position : struct Vector3, rotationAxis : struct Vector3, rotationAngle : float, scale : struct Vector3, tint : struct Color) void;
+extern DrawBoundingBox(box : struct BoundingBox, color : struct Color) void;
+extern DrawBillboard(camera : struct Camera, texture : struct Texture2D, position : struct Vector3, size : float, tint : struct Color) void;
+extern DrawBillboardRec(camera : struct Camera, texture : struct Texture2D, source : struct Rectangle, position : struct Vector3, size : struct Vector2, tint : struct Color) void;
+extern DrawBillboardPro(camera : struct Camera, texture : struct Texture2D, source : struct Rectangle, position : struct Vector3, up : struct Vector3, size : struct Vector2, origin : struct Vector2, rotation : float, tint : struct Color) void;
+extern UploadMesh(mesh : struct Mesh ptr, dynamic : bool) void;
+extern UpdateMeshBuffer(mesh : struct Mesh, index : int, data : void ptr, dataSize : int, offset : int) void;
+extern UnloadMesh(mesh : struct Mesh) void;
+extern DrawMesh(mesh : struct Mesh, material : struct Material, transform : struct Matrix) void;
+extern DrawMeshInstanced(mesh : struct Mesh, material : struct Material, transforms : struct Matrix ptr, instances : int) void;
+extern ExportMesh(mesh : struct Mesh, fileName : i8 ptr) int;
+extern GetMeshBoundingBox(mesh : struct Mesh) struct BoundingBox;
+extern GenMeshTangents(mesh : struct Mesh ptr) void;
+extern GenMeshPoly(sides : int, radius : float) struct Mesh;
+extern GenMeshPlane(width : float, length : float, resX : int, resZ : int) struct Mesh;
+extern GenMeshCube(width : float, height : float, length : float) struct Mesh;
+extern GenMeshSphere(radius : float, rings : int, slices : int) struct Mesh;
+extern GenMeshHemiSphere(radius : float, rings : int, slices : int) struct Mesh;
+extern GenMeshCylinder(radius : float, height : float, slices : int) struct Mesh;
+extern GenMeshCone(radius : float, height : float, slices : int) struct Mesh;
+extern GenMeshTorus(radius : float, size : float, radSeg : int, sides : int) struct Mesh;
+extern GenMeshKnot(radius : float, size : float, radSeg : int, sides : int) struct Mesh;
+extern GenMeshHeightmap(heightmap : struct Image, size : struct Vector3) struct Mesh;
+extern GenMeshCubicmap(cubicmap : struct Image, cubeSize : struct Vector3) struct Mesh;
+extern LoadMaterials(fileName : i8 ptr, materialCount : int ptr) struct Material ptr;
+extern LoadMaterialDefault() struct Material;
+extern IsMaterialReady(material : struct Material) int;
+extern UnloadMaterial(material : struct Material) void;
+extern SetMaterialTexture(material : struct Material ptr, mapType : int, texture : struct Texture2D) void;
+extern SetModelMeshMaterial(model : struct Model ptr, meshId : int, materialId : int) void;
+extern LoadModelAnimations(fileName : i8 ptr, animCount : u32 ptr) struct ModelAnimation ptr;
+extern UpdateModelAnimation(model : struct Model, anim : struct ModelAnimation, frame : int) void;
+extern UnloadModelAnimation(anim : struct ModelAnimation) void;
+extern UnloadModelAnimations(animations : struct ModelAnimation ptr, count : u32) void;
+extern IsModelAnimationValid(model : struct Model, anim : struct ModelAnimation) int;
+extern CheckCollisionSpheres(center1 : struct Vector3, radius1 : float, center2 : struct Vector3, radius2 : float) int;
+extern CheckCollisionBoxes(box1 : struct BoundingBox, box2 : struct BoundingBox) int;
+extern CheckCollisionBoxSphere(box : struct BoundingBox, center : struct Vector3, radius : float) int;
+extern GetRayCollisionSphere(ray : struct Ray, center : struct Vector3, radius : float) struct RayCollision;
+extern GetRayCollisionBox(ray : struct Ray, box : struct BoundingBox) struct RayCollision;
+extern GetRayCollisionMesh(ray : struct Ray, mesh : struct Mesh, transform : struct Matrix) struct RayCollision;
+extern GetRayCollisionTriangle(ray : struct Ray, p1 : struct Vector3, p2 : struct Vector3, p3 : struct Vector3) struct RayCollision;
+extern GetRayCollisionQuad(ray : struct Ray, p1 : struct Vector3, p2 : struct Vector3, p3 : struct Vector3, p4 : struct Vector3) struct RayCollision;
+extern InitAudioDevice() void;
+extern CloseAudioDevice() void;
+extern IsAudioDeviceReady() int;
+extern SetMasterVolume(volume : float) void;
+extern LoadWave(fileName : i8 ptr) struct Wave;
+extern LoadWaveFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int) struct Wave;
+extern IsWaveReady(wave : struct Wave) int;
+extern LoadSound(fileName : i8 ptr) struct Sound;
+extern LoadSoundFromWave(wave : struct Wave) struct Sound;
+extern IsSoundReady(sound : struct Sound) int;
+extern UpdateSound(sound : struct Sound, data : void ptr, sampleCount : int) void;
+extern UnloadWave(wave : struct Wave) void;
+extern UnloadSound(sound : struct Sound) void;
+extern ExportWave(wave : struct Wave, fileName : i8 ptr) int;
+extern ExportWaveAsCode(wave : struct Wave, fileName : i8 ptr) int;
+extern PlaySound(sound : struct Sound) void;
+extern StopSound(sound : struct Sound) void;
+extern PauseSound(sound : struct Sound) void;
+extern ResumeSound(sound : struct Sound) void;
+extern IsSoundPlaying(sound : struct Sound) int;
+extern SetSoundVolume(sound : struct Sound, volume : float) void;
+extern SetSoundPitch(sound : struct Sound, pitch : float) void;
+extern SetSoundPan(sound : struct Sound, pan : float) void;
+extern WaveCopy(wave : struct Wave) struct Wave;
+extern WaveCrop(wave : struct Wave ptr, initSample : int, finalSample : int) void;
+extern WaveFormat(wave : struct Wave ptr, sampleRate : int, sampleSize : int, channels : int) void;
+extern LoadWaveSamples(wave : struct Wave) float ptr;
+extern UnloadWaveSamples(samples : float ptr) void;
+extern LoadMusicStream(fileName : i8 ptr) struct Music;
+extern LoadMusicStreamFromMemory(fileType : i8 ptr, data : i8 ptr, dataSize : int) struct Music;
+extern IsMusicReady(music : struct Music) int;
+extern UnloadMusicStream(music : struct Music) void;
+extern PlayMusicStream(music : struct Music) void;
+extern IsMusicStreamPlaying(music : struct Music) int;
+extern UpdateMusicStream(music : struct Music) void;
+extern StopMusicStream(music : struct Music) void;
+extern PauseMusicStream(music : struct Music) void;
+extern ResumeMusicStream(music : struct Music) void;
+extern SeekMusicStream(music : struct Music, position : float) void;
+extern SetMusicVolume(music : struct Music, volume : float) void;
+extern SetMusicPitch(music : struct Music, pitch : float) void;
+extern SetMusicPan(music : struct Music, pan : float) void;
+extern GetMusicTimeLength(music : struct Music) float;
+extern GetMusicTimePlayed(music : struct Music) float;
+extern LoadAudioStream(sampleRate : u32, sampleSize : u32, channels : u32) struct AudioStream;
+extern IsAudioStreamReady(stream : struct AudioStream) int;
+extern UnloadAudioStream(stream : struct AudioStream) void;
+extern UpdateAudioStream(stream : struct AudioStream, data : void ptr, frameCount : int) void;
+extern IsAudioStreamProcessed(stream : struct AudioStream) int;
+extern PlayAudioStream(stream : struct AudioStream) void;
+extern PauseAudioStream(stream : struct AudioStream) void;
+extern ResumeAudioStream(stream : struct AudioStream) void;
+extern IsAudioStreamPlaying(stream : struct AudioStream) int;
+extern StopAudioStream(stream : struct AudioStream) void;
+extern SetAudioStreamVolume(stream : struct AudioStream, volume : float) void;
+extern SetAudioStreamPitch(stream : struct AudioStream, pitch : float) void;
+extern SetAudioStreamPan(stream : struct AudioStream, pan : float) void;
+extern SetAudioStreamBufferSizeDefault(size : int) void;
