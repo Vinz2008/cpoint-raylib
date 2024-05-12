@@ -1,83 +1,37 @@
-?[define KEY_ENTER 257]
-?[define KEY_BACKSPACE 259]
-?[define KEY_RIGHT 262]
-?[define KEY_LEFT 263]
-?[define KEY_DOWN 264]
-?[define KEY_UP 265]
-
-struct Color {
-    var r : i8
-    var g : i8
-    var b : i8
-    var a : i8
-}
-
 struct Vector2 {
-    var x : float
-    var y : float
+	var x : float 
+	var y : float 
 }
-
 struct Vector3 {
     var x : float
     var y : float
     var z : float
 }
-
 struct Vector4 {
     var x : float
     var y : float
     var z : float
     var w : float
 }
-
-struct Rectangle {
-    var x : float
-    var y : float
-    var width : float
-    var height : float
-}
-
 struct Image {
-    var data : int ptr
+    var data : void ptr
     var width : int
     var height : int
     var mipmaps : int
     var format : int
 }
- 
-struct Texture {
-    var id : int
-    var width :int
-    var height : int
-    var mipmaps : int
-    var format : int
+struct Color {
+    var r : u8
+    var g : u8
+    var b : u8
+    var a : u8
 }
-
-struct TextureCubemap {
-    var id : int
-    var width :int
-    var height : int
-    var mipmaps : int
-    var format : int
+struct Camera2D {
+    var offset : struct Vector2
+    var target : struct Vector2
+    var rotation : float
+    var zoom : float
 }
-
-struct Texture2D {
-    var id : int
-    var width :int
-    var height : int
-    var mipmaps : int
-    var format : int
-}
-
-struct Camera {
-    var position : struct Vector3
-    var target : struct Vector3
-    var up : struct Vector3
-    var fovy : float
-    var projection : int
-}
-
-
 struct Camera3D {
     var position : struct Vector3
     var target : struct Vector3
@@ -85,25 +39,36 @@ struct Camera3D {
     var fovy : float
     var projection : int
 }
-
-struct Camera2D {
-    var offset : struct Vector2
-    var target : struct Vector2
-    var rotation : float
-    var zoom : float
+struct Texture {
+    var id : u32
+    var width : int
+    var height : int
+    var mipmaps : int
+    var format : int
 }
-
+struct Texture2D {
+    var id : u32
+    var width : int
+    var height : int
+    var mipmaps : int
+    var format : int
+}
+struct TextureCubemap {
+    var id : u32
+    var width : int
+    var height : int
+    var mipmaps : int
+    var format : int
+}
 struct RenderTexture2D {
     var id : u32
     var texture : struct Texture
     var depth : struct Texture
 }
-
 struct Shader {
     var id : u32
     var locs : int ptr
 }
-
 struct Matrix {
     var m0 : float
     var m4 : float
@@ -122,7 +87,6 @@ struct Matrix {
     var m11 : float
     var m15 : float
 }
-
 struct VrStereoConfig {
     var projection[2] : struct Matrix
     var viewOffset[2] : struct Matrix
@@ -133,7 +97,6 @@ struct VrStereoConfig {
     var scale[2] : float
     var scaleIn[2] : float
 }
-
 struct VrDeviceInfo {
     var hResolution : int
     var vResolution : int
@@ -146,26 +109,44 @@ struct VrDeviceInfo {
     var lensDistortionValues[4] : float
     var chromaAbCorrection[4] : float
 }
-
 struct Ray {
     var position : struct Vector3
     var direction : struct Vector3
 }
-
+struct Camera {
+    var offset : struct Vector2
+    var target : struct Vector2
+    var rotation : float
+    var zoom : float
+}
 struct FilePathList {
     var capacity : u32
     var count : u32
-    var paths : i8 ptr ptr
+    var path : i8 ptr ptr
 }
-
+struct AutomationEvent {
+    var frame : u32
+    var type_ : u32
+    var params[4] : int
+}
+struct AutomationEventList {
+    var capacity : u32
+    var count : u32
+    var events : struct AutomationEvent ptr
+}
+struct Rectangle {
+    var x : float
+    var y : float
+    var width : float
+    var height : float
+}
 struct GlyphInfo {
     var value : int
     var offsetX : int
     var offsetY : int
     var advanceX : int
-    var image : struct Image
+    var image  : struct Image
 }
-
 struct Font {
     var baseSize : int
     var glyphCount : int
@@ -174,7 +155,6 @@ struct Font {
     var recs : struct Rectangle ptr
     var glyphs : struct GlyphInfo ptr
 }
-
 struct NPatchInfo {
     var source : struct Rectangle
     var left : int
@@ -183,7 +163,16 @@ struct NPatchInfo {
     var bottom : int
     var layout : int
 }
-
+struct MaterialMap {
+    var shader : struct Shader
+    var color : struct Color
+    var value : float
+}
+struct Material {
+    var shader : struct Shader
+    var maps : struct MaterialMap ptr
+    var params[4] : float
+}
 struct Mesh {
     var vertexCount : int
     var triangleCount : int
@@ -198,64 +187,45 @@ struct Mesh {
     var animNormals : float ptr
     var boneIds : u8 ptr
     var boneWeights : float ptr
-    var vaoId: u32
+    var vaoId : u32
     var vboId : u32 ptr
 }
-
-struct MaterialMap {
-    var texture : struct Texture2D
-    var color : struct Color
-    var value : float
-}
-
-struct Material {
-    var shader : struct Shader
-    var maps : struct MaterialMap ptr
-    var params[4] : float
-}
-
 struct BoneInfo {
     var name[32] : i8
     var parent : int
 }
-
 struct Transform {
     var translation : struct Vector3
     var rotation : struct Vector4
     var scale : struct Vector3
 }
-
 struct Model {
     var transform : struct Matrix
     var meshCount : int
     var materialCount : int
     var meshes : struct Mesh ptr
     var materials : struct Material ptr
-    var meshMaterial : int ptr
     var boneCount : int
     var bones : struct BoneInfo ptr
     var bindPose : struct Transform ptr
 }
-
 struct BoundingBox {
     var min : struct Vector3
     var max : struct Vector3
 }
-
 struct ModelAnimation {
     var boneCount : int
     var frameCount : int
     var bones : struct BoneInfo ptr
     var framePoses : struct Transform ptr ptr
+    var name[32] : i8
 }
-
 struct RayCollision {
-    var hit : i8
+    var hit : u8
     var distance : float
     var point : struct Vector3
     var normal : struct Vector3
 }
-
 struct Wave {
     var frameCount : u32
     var sampleRate : u32
@@ -271,8 +241,6 @@ struct rAudioBuffer {
 struct rAudioProcessor {
     var a : int
 }
-
-
 struct AudioStream {
     var buffer : struct rAudioBuffer ptr
     var processor : struct rAudioProcessor ptr
@@ -280,23 +248,700 @@ struct AudioStream {
     var sampleSize : u32
     var channels : u32
 }
-
 struct Sound {
     var stream : struct AudioStream
     var frameCount : u32
 }
-
 struct Music {
     var stream : struct AudioStream
     var frameCount : u32
-    var looping : i8
+    var looping : u8
     var ctxType : int
     var ctxData : void ptr
 }
-
+enum ConfigFlags {
+	FLAG_VSYNC_HINT = 64
+	FLAG_FULLSCREEN_MODE = 2
+	FLAG_WINDOW_RESIZABLE = 4
+	FLAG_WINDOW_UNDECORATED = 8
+	FLAG_WINDOW_HIDDEN = 128
+	FLAG_WINDOW_MINIMIZED = 512
+	FLAG_WINDOW_MAXIMIZED = 1024
+	FLAG_WINDOW_UNFOCUSED = 2048
+	FLAG_WINDOW_TOPMOST = 4096
+	FLAG_WINDOW_ALWAYS_RUN = 256
+	FLAG_WINDOW_TRANSPARENT = 16
+	FLAG_WINDOW_HIGHDPI = 8192
+	FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384
+	FLAG_BORDERLESS_WINDOWED_MODE = 32768
+	FLAG_MSAA_4X_HINT = 32
+	FLAG_INTERLACED_HINT = 65536
+}
+enum ConfigFlags {
+	FLAG_VSYNC_HINT = 64
+	FLAG_FULLSCREEN_MODE = 2
+	FLAG_WINDOW_RESIZABLE = 4
+	FLAG_WINDOW_UNDECORATED = 8
+	FLAG_WINDOW_HIDDEN = 128
+	FLAG_WINDOW_MINIMIZED = 512
+	FLAG_WINDOW_MAXIMIZED = 1024
+	FLAG_WINDOW_UNFOCUSED = 2048
+	FLAG_WINDOW_TOPMOST = 4096
+	FLAG_WINDOW_ALWAYS_RUN = 256
+	FLAG_WINDOW_TRANSPARENT = 16
+	FLAG_WINDOW_HIGHDPI = 8192
+	FLAG_WINDOW_MOUSE_PASSTHROUGH = 16384
+	FLAG_BORDERLESS_WINDOWED_MODE = 32768
+	FLAG_MSAA_4X_HINT = 32
+	FLAG_INTERLACED_HINT = 65536
+}
+enum TraceLogLevel {
+	LOG_ALL = 0
+	LOG_TRACE
+	LOG_DEBUG
+	LOG_INFO
+	LOG_WARNING
+	LOG_ERROR
+	LOG_FATAL
+	LOG_NONE
+}
+enum TraceLogLevel {
+	LOG_ALL = 0
+	LOG_TRACE
+	LOG_DEBUG
+	LOG_INFO
+	LOG_WARNING
+	LOG_ERROR
+	LOG_FATAL
+	LOG_NONE
+}
+enum KeyboardKey {
+	KEY_NULL = 0
+	KEY_APOSTROPHE = 39
+	KEY_COMMA = 44
+	KEY_MINUS = 45
+	KEY_PERIOD = 46
+	KEY_SLASH = 47
+	KEY_ZERO = 48
+	KEY_ONE = 49
+	KEY_TWO = 50
+	KEY_THREE = 51
+	KEY_FOUR = 52
+	KEY_FIVE = 53
+	KEY_SIX = 54
+	KEY_SEVEN = 55
+	KEY_EIGHT = 56
+	KEY_NINE = 57
+	KEY_SEMICOLON = 59
+	KEY_EQUAL = 61
+	KEY_A = 65
+	KEY_B = 66
+	KEY_C = 67
+	KEY_D = 68
+	KEY_E = 69
+	KEY_F = 70
+	KEY_G = 71
+	KEY_H = 72
+	KEY_I = 73
+	KEY_J = 74
+	KEY_K = 75
+	KEY_L = 76
+	KEY_M = 77
+	KEY_N = 78
+	KEY_O = 79
+	KEY_P = 80
+	KEY_Q = 81
+	KEY_R = 82
+	KEY_S = 83
+	KEY_T = 84
+	KEY_U = 85
+	KEY_V = 86
+	KEY_W = 87
+	KEY_X = 88
+	KEY_Y = 89
+	KEY_Z = 90
+	KEY_LEFT_BRACKET = 91
+	KEY_BACKSLASH = 92
+	KEY_RIGHT_BRACKET = 93
+	KEY_GRAVE = 96
+	KEY_SPACE = 32
+	KEY_ESCAPE = 256
+	KEY_ENTER = 257
+	KEY_TAB = 258
+	KEY_BACKSPACE = 259
+	KEY_INSERT = 260
+	KEY_DELETE = 261
+	KEY_RIGHT = 262
+	KEY_LEFT = 263
+	KEY_DOWN = 264
+	KEY_UP = 265
+	KEY_PAGE_UP = 266
+	KEY_PAGE_DOWN = 267
+	KEY_HOME = 268
+	KEY_END = 269
+	KEY_CAPS_LOCK = 280
+	KEY_SCROLL_LOCK = 281
+	KEY_NUM_LOCK = 282
+	KEY_PRINT_SCREEN = 283
+	KEY_PAUSE = 284
+	KEY_F1 = 290
+	KEY_F2 = 291
+	KEY_F3 = 292
+	KEY_F4 = 293
+	KEY_F5 = 294
+	KEY_F6 = 295
+	KEY_F7 = 296
+	KEY_F8 = 297
+	KEY_F9 = 298
+	KEY_F10 = 299
+	KEY_F11 = 300
+	KEY_F12 = 301
+	KEY_LEFT_SHIFT = 340
+	KEY_LEFT_CONTROL = 341
+	KEY_LEFT_ALT = 342
+	KEY_LEFT_SUPER = 343
+	KEY_RIGHT_SHIFT = 344
+	KEY_RIGHT_CONTROL = 345
+	KEY_RIGHT_ALT = 346
+	KEY_RIGHT_SUPER = 347
+	KEY_KB_MENU = 348
+	KEY_KP_0 = 320
+	KEY_KP_1 = 321
+	KEY_KP_2 = 322
+	KEY_KP_3 = 323
+	KEY_KP_4 = 324
+	KEY_KP_5 = 325
+	KEY_KP_6 = 326
+	KEY_KP_7 = 327
+	KEY_KP_8 = 328
+	KEY_KP_9 = 329
+	KEY_KP_DECIMAL = 330
+	KEY_KP_DIVIDE = 331
+	KEY_KP_MULTIPLY = 332
+	KEY_KP_SUBTRACT = 333
+	KEY_KP_ADD = 334
+	KEY_KP_ENTER = 335
+	KEY_KP_EQUAL = 336
+	KEY_BACK = 4
+	KEY_MENU = 82
+	KEY_VOLUME_UP = 24
+	KEY_VOLUME_DOWN = 25
+}
+enum KeyboardKey {
+	KEY_NULL = 0
+	KEY_APOSTROPHE = 39
+	KEY_COMMA = 44
+	KEY_MINUS = 45
+	KEY_PERIOD = 46
+	KEY_SLASH = 47
+	KEY_ZERO = 48
+	KEY_ONE = 49
+	KEY_TWO = 50
+	KEY_THREE = 51
+	KEY_FOUR = 52
+	KEY_FIVE = 53
+	KEY_SIX = 54
+	KEY_SEVEN = 55
+	KEY_EIGHT = 56
+	KEY_NINE = 57
+	KEY_SEMICOLON = 59
+	KEY_EQUAL = 61
+	KEY_A = 65
+	KEY_B = 66
+	KEY_C = 67
+	KEY_D = 68
+	KEY_E = 69
+	KEY_F = 70
+	KEY_G = 71
+	KEY_H = 72
+	KEY_I = 73
+	KEY_J = 74
+	KEY_K = 75
+	KEY_L = 76
+	KEY_M = 77
+	KEY_N = 78
+	KEY_O = 79
+	KEY_P = 80
+	KEY_Q = 81
+	KEY_R = 82
+	KEY_S = 83
+	KEY_T = 84
+	KEY_U = 85
+	KEY_V = 86
+	KEY_W = 87
+	KEY_X = 88
+	KEY_Y = 89
+	KEY_Z = 90
+	KEY_LEFT_BRACKET = 91
+	KEY_BACKSLASH = 92
+	KEY_RIGHT_BRACKET = 93
+	KEY_GRAVE = 96
+	KEY_SPACE = 32
+	KEY_ESCAPE = 256
+	KEY_ENTER = 257
+	KEY_TAB = 258
+	KEY_BACKSPACE = 259
+	KEY_INSERT = 260
+	KEY_DELETE = 261
+	KEY_RIGHT = 262
+	KEY_LEFT = 263
+	KEY_DOWN = 264
+	KEY_UP = 265
+	KEY_PAGE_UP = 266
+	KEY_PAGE_DOWN = 267
+	KEY_HOME = 268
+	KEY_END = 269
+	KEY_CAPS_LOCK = 280
+	KEY_SCROLL_LOCK = 281
+	KEY_NUM_LOCK = 282
+	KEY_PRINT_SCREEN = 283
+	KEY_PAUSE = 284
+	KEY_F1 = 290
+	KEY_F2 = 291
+	KEY_F3 = 292
+	KEY_F4 = 293
+	KEY_F5 = 294
+	KEY_F6 = 295
+	KEY_F7 = 296
+	KEY_F8 = 297
+	KEY_F9 = 298
+	KEY_F10 = 299
+	KEY_F11 = 300
+	KEY_F12 = 301
+	KEY_LEFT_SHIFT = 340
+	KEY_LEFT_CONTROL = 341
+	KEY_LEFT_ALT = 342
+	KEY_LEFT_SUPER = 343
+	KEY_RIGHT_SHIFT = 344
+	KEY_RIGHT_CONTROL = 345
+	KEY_RIGHT_ALT = 346
+	KEY_RIGHT_SUPER = 347
+	KEY_KB_MENU = 348
+	KEY_KP_0 = 320
+	KEY_KP_1 = 321
+	KEY_KP_2 = 322
+	KEY_KP_3 = 323
+	KEY_KP_4 = 324
+	KEY_KP_5 = 325
+	KEY_KP_6 = 326
+	KEY_KP_7 = 327
+	KEY_KP_8 = 328
+	KEY_KP_9 = 329
+	KEY_KP_DECIMAL = 330
+	KEY_KP_DIVIDE = 331
+	KEY_KP_MULTIPLY = 332
+	KEY_KP_SUBTRACT = 333
+	KEY_KP_ADD = 334
+	KEY_KP_ENTER = 335
+	KEY_KP_EQUAL = 336
+	KEY_BACK = 4
+	KEY_MENU = 82
+	KEY_VOLUME_UP = 24
+	KEY_VOLUME_DOWN = 25
+}
+enum MouseButton {
+	MOUSE_BUTTON_LEFT = 0
+	MOUSE_BUTTON_RIGHT = 1
+	MOUSE_BUTTON_MIDDLE = 2
+	MOUSE_BUTTON_SIDE = 3
+	MOUSE_BUTTON_EXTRA = 4
+	MOUSE_BUTTON_FORWARD = 5
+	MOUSE_BUTTON_BACK = 6
+}
+enum MouseButton {
+	MOUSE_BUTTON_LEFT = 0
+	MOUSE_BUTTON_RIGHT = 1
+	MOUSE_BUTTON_MIDDLE = 2
+	MOUSE_BUTTON_SIDE = 3
+	MOUSE_BUTTON_EXTRA = 4
+	MOUSE_BUTTON_FORWARD = 5
+	MOUSE_BUTTON_BACK = 6
+}
+enum MouseCursor {
+	MOUSE_CURSOR_DEFAULT = 0
+	MOUSE_CURSOR_ARROW = 1
+	MOUSE_CURSOR_IBEAM = 2
+	MOUSE_CURSOR_CROSSHAIR = 3
+	MOUSE_CURSOR_POINTING_HAND = 4
+	MOUSE_CURSOR_RESIZE_EW = 5
+	MOUSE_CURSOR_RESIZE_NS = 6
+	MOUSE_CURSOR_RESIZE_NWSE = 7
+	MOUSE_CURSOR_RESIZE_NESW = 8
+	MOUSE_CURSOR_RESIZE_ALL = 9
+	MOUSE_CURSOR_NOT_ALLOWED = 10
+}
+enum MouseCursor {
+	MOUSE_CURSOR_DEFAULT = 0
+	MOUSE_CURSOR_ARROW = 1
+	MOUSE_CURSOR_IBEAM = 2
+	MOUSE_CURSOR_CROSSHAIR = 3
+	MOUSE_CURSOR_POINTING_HAND = 4
+	MOUSE_CURSOR_RESIZE_EW = 5
+	MOUSE_CURSOR_RESIZE_NS = 6
+	MOUSE_CURSOR_RESIZE_NWSE = 7
+	MOUSE_CURSOR_RESIZE_NESW = 8
+	MOUSE_CURSOR_RESIZE_ALL = 9
+	MOUSE_CURSOR_NOT_ALLOWED = 10
+}
+enum GamepadButton {
+	GAMEPAD_BUTTON_UNKNOWN = 0
+	GAMEPAD_BUTTON_LEFT_FACE_UP
+	GAMEPAD_BUTTON_LEFT_FACE_RIGHT
+	GAMEPAD_BUTTON_LEFT_FACE_DOWN
+	GAMEPAD_BUTTON_LEFT_FACE_LEFT
+	GAMEPAD_BUTTON_RIGHT_FACE_UP
+	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT
+	GAMEPAD_BUTTON_RIGHT_FACE_DOWN
+	GAMEPAD_BUTTON_RIGHT_FACE_LEFT
+	GAMEPAD_BUTTON_LEFT_TRIGGER_1
+	GAMEPAD_BUTTON_LEFT_TRIGGER_2
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_1
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_2
+	GAMEPAD_BUTTON_MIDDLE_LEFT
+	GAMEPAD_BUTTON_MIDDLE
+	GAMEPAD_BUTTON_MIDDLE_RIGHT
+	GAMEPAD_BUTTON_LEFT_THUMB
+	GAMEPAD_BUTTON_RIGHT_THUMB
+}
+enum GamepadButton {
+	GAMEPAD_BUTTON_UNKNOWN = 0
+	GAMEPAD_BUTTON_LEFT_FACE_UP
+	GAMEPAD_BUTTON_LEFT_FACE_RIGHT
+	GAMEPAD_BUTTON_LEFT_FACE_DOWN
+	GAMEPAD_BUTTON_LEFT_FACE_LEFT
+	GAMEPAD_BUTTON_RIGHT_FACE_UP
+	GAMEPAD_BUTTON_RIGHT_FACE_RIGHT
+	GAMEPAD_BUTTON_RIGHT_FACE_DOWN
+	GAMEPAD_BUTTON_RIGHT_FACE_LEFT
+	GAMEPAD_BUTTON_LEFT_TRIGGER_1
+	GAMEPAD_BUTTON_LEFT_TRIGGER_2
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_1
+	GAMEPAD_BUTTON_RIGHT_TRIGGER_2
+	GAMEPAD_BUTTON_MIDDLE_LEFT
+	GAMEPAD_BUTTON_MIDDLE
+	GAMEPAD_BUTTON_MIDDLE_RIGHT
+	GAMEPAD_BUTTON_LEFT_THUMB
+	GAMEPAD_BUTTON_RIGHT_THUMB
+}
+enum GamepadAxis {
+	GAMEPAD_AXIS_LEFT_X = 0
+	GAMEPAD_AXIS_LEFT_Y = 1
+	GAMEPAD_AXIS_RIGHT_X = 2
+	GAMEPAD_AXIS_RIGHT_Y = 3
+	GAMEPAD_AXIS_LEFT_TRIGGER = 4
+	GAMEPAD_AXIS_RIGHT_TRIGGER = 5
+}
+enum GamepadAxis {
+	GAMEPAD_AXIS_LEFT_X = 0
+	GAMEPAD_AXIS_LEFT_Y = 1
+	GAMEPAD_AXIS_RIGHT_X = 2
+	GAMEPAD_AXIS_RIGHT_Y = 3
+	GAMEPAD_AXIS_LEFT_TRIGGER = 4
+	GAMEPAD_AXIS_RIGHT_TRIGGER = 5
+}
+enum MaterialMapIndex {
+	MATERIAL_MAP_ALBEDO = 0
+	MATERIAL_MAP_METALNESS
+	MATERIAL_MAP_NORMAL
+	MATERIAL_MAP_ROUGHNESS
+	MATERIAL_MAP_OCCLUSION
+	MATERIAL_MAP_EMISSION
+	MATERIAL_MAP_HEIGHT
+	MATERIAL_MAP_CUBEMAP
+	MATERIAL_MAP_IRRADIANCE
+	MATERIAL_MAP_PREFILTER
+	MATERIAL_MAP_BRDF
+}
+enum MaterialMapIndex {
+	MATERIAL_MAP_ALBEDO = 0
+	MATERIAL_MAP_METALNESS
+	MATERIAL_MAP_NORMAL
+	MATERIAL_MAP_ROUGHNESS
+	MATERIAL_MAP_OCCLUSION
+	MATERIAL_MAP_EMISSION
+	MATERIAL_MAP_HEIGHT
+	MATERIAL_MAP_CUBEMAP
+	MATERIAL_MAP_IRRADIANCE
+	MATERIAL_MAP_PREFILTER
+	MATERIAL_MAP_BRDF
+}
+enum ShaderLocationIndex {
+	SHADER_LOC_VERTEX_POSITION = 0
+	SHADER_LOC_VERTEX_TEXCOORD01
+	SHADER_LOC_VERTEX_TEXCOORD02
+	SHADER_LOC_VERTEX_NORMAL
+	SHADER_LOC_VERTEX_TANGENT
+	SHADER_LOC_VERTEX_COLOR
+	SHADER_LOC_MATRIX_MVP
+	SHADER_LOC_MATRIX_VIEW
+	SHADER_LOC_MATRIX_PROJECTION
+	SHADER_LOC_MATRIX_MODEL
+	SHADER_LOC_MATRIX_NORMAL
+	SHADER_LOC_VECTOR_VIEW
+	SHADER_LOC_COLOR_DIFFUSE
+	SHADER_LOC_COLOR_SPECULAR
+	SHADER_LOC_COLOR_AMBIENT
+	SHADER_LOC_MAP_ALBEDO
+	SHADER_LOC_MAP_METALNESS
+	SHADER_LOC_MAP_NORMAL
+	SHADER_LOC_MAP_ROUGHNESS
+	SHADER_LOC_MAP_OCCLUSION
+	SHADER_LOC_MAP_EMISSION
+	SHADER_LOC_MAP_HEIGHT
+	SHADER_LOC_MAP_CUBEMAP
+	SHADER_LOC_MAP_IRRADIANCE
+	SHADER_LOC_MAP_PREFILTER
+	SHADER_LOC_MAP_BRDF
+}
+enum ShaderLocationIndex {
+	SHADER_LOC_VERTEX_POSITION = 0
+	SHADER_LOC_VERTEX_TEXCOORD01
+	SHADER_LOC_VERTEX_TEXCOORD02
+	SHADER_LOC_VERTEX_NORMAL
+	SHADER_LOC_VERTEX_TANGENT
+	SHADER_LOC_VERTEX_COLOR
+	SHADER_LOC_MATRIX_MVP
+	SHADER_LOC_MATRIX_VIEW
+	SHADER_LOC_MATRIX_PROJECTION
+	SHADER_LOC_MATRIX_MODEL
+	SHADER_LOC_MATRIX_NORMAL
+	SHADER_LOC_VECTOR_VIEW
+	SHADER_LOC_COLOR_DIFFUSE
+	SHADER_LOC_COLOR_SPECULAR
+	SHADER_LOC_COLOR_AMBIENT
+	SHADER_LOC_MAP_ALBEDO
+	SHADER_LOC_MAP_METALNESS
+	SHADER_LOC_MAP_NORMAL
+	SHADER_LOC_MAP_ROUGHNESS
+	SHADER_LOC_MAP_OCCLUSION
+	SHADER_LOC_MAP_EMISSION
+	SHADER_LOC_MAP_HEIGHT
+	SHADER_LOC_MAP_CUBEMAP
+	SHADER_LOC_MAP_IRRADIANCE
+	SHADER_LOC_MAP_PREFILTER
+	SHADER_LOC_MAP_BRDF
+}
+enum ShaderUniformDataType {
+	SHADER_UNIFORM_FLOAT = 0
+	SHADER_UNIFORM_VEC2
+	SHADER_UNIFORM_VEC3
+	SHADER_UNIFORM_VEC4
+	SHADER_UNIFORM_INT
+	SHADER_UNIFORM_IVEC2
+	SHADER_UNIFORM_IVEC3
+	SHADER_UNIFORM_IVEC4
+	SHADER_UNIFORM_SAMPLER2D
+}
+enum ShaderUniformDataType {
+	SHADER_UNIFORM_FLOAT = 0
+	SHADER_UNIFORM_VEC2
+	SHADER_UNIFORM_VEC3
+	SHADER_UNIFORM_VEC4
+	SHADER_UNIFORM_INT
+	SHADER_UNIFORM_IVEC2
+	SHADER_UNIFORM_IVEC3
+	SHADER_UNIFORM_IVEC4
+	SHADER_UNIFORM_SAMPLER2D
+}
+enum ShaderAttributeDataType {
+	SHADER_ATTRIB_FLOAT = 0
+	SHADER_ATTRIB_VEC2
+	SHADER_ATTRIB_VEC3
+	SHADER_ATTRIB_VEC4
+}
+enum ShaderAttributeDataType {
+	SHADER_ATTRIB_FLOAT = 0
+	SHADER_ATTRIB_VEC2
+	SHADER_ATTRIB_VEC3
+	SHADER_ATTRIB_VEC4
+}
+enum PixelFormat {
+	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1
+	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+	PIXELFORMAT_UNCOMPRESSED_R5G6B5
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8
+	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1
+	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+	PIXELFORMAT_UNCOMPRESSED_R32
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
+	PIXELFORMAT_UNCOMPRESSED_R16
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16
+	PIXELFORMAT_COMPRESSED_DXT1_RGB
+	PIXELFORMAT_COMPRESSED_DXT1_RGBA
+	PIXELFORMAT_COMPRESSED_DXT3_RGBA
+	PIXELFORMAT_COMPRESSED_DXT5_RGBA
+	PIXELFORMAT_COMPRESSED_ETC1_RGB
+	PIXELFORMAT_COMPRESSED_ETC2_RGB
+	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA
+	PIXELFORMAT_COMPRESSED_PVRT_RGB
+	PIXELFORMAT_COMPRESSED_PVRT_RGBA
+	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA
+	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA
+}
+enum PixelFormat {
+	PIXELFORMAT_UNCOMPRESSED_GRAYSCALE = 1
+	PIXELFORMAT_UNCOMPRESSED_GRAY_ALPHA
+	PIXELFORMAT_UNCOMPRESSED_R5G6B5
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8
+	PIXELFORMAT_UNCOMPRESSED_R5G5B5A1
+	PIXELFORMAT_UNCOMPRESSED_R4G4B4A4
+	PIXELFORMAT_UNCOMPRESSED_R8G8B8A8
+	PIXELFORMAT_UNCOMPRESSED_R32
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32
+	PIXELFORMAT_UNCOMPRESSED_R32G32B32A32
+	PIXELFORMAT_UNCOMPRESSED_R16
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16
+	PIXELFORMAT_UNCOMPRESSED_R16G16B16A16
+	PIXELFORMAT_COMPRESSED_DXT1_RGB
+	PIXELFORMAT_COMPRESSED_DXT1_RGBA
+	PIXELFORMAT_COMPRESSED_DXT3_RGBA
+	PIXELFORMAT_COMPRESSED_DXT5_RGBA
+	PIXELFORMAT_COMPRESSED_ETC1_RGB
+	PIXELFORMAT_COMPRESSED_ETC2_RGB
+	PIXELFORMAT_COMPRESSED_ETC2_EAC_RGBA
+	PIXELFORMAT_COMPRESSED_PVRT_RGB
+	PIXELFORMAT_COMPRESSED_PVRT_RGBA
+	PIXELFORMAT_COMPRESSED_ASTC_4x4_RGBA
+	PIXELFORMAT_COMPRESSED_ASTC_8x8_RGBA
+}
+enum TextureFilter {
+	TEXTURE_FILTER_POINT = 0
+	TEXTURE_FILTER_BILINEAR
+	TEXTURE_FILTER_TRILINEAR
+	TEXTURE_FILTER_ANISOTROPIC_4X
+	TEXTURE_FILTER_ANISOTROPIC_8X
+	TEXTURE_FILTER_ANISOTROPIC_16X
+}
+enum TextureFilter {
+	TEXTURE_FILTER_POINT = 0
+	TEXTURE_FILTER_BILINEAR
+	TEXTURE_FILTER_TRILINEAR
+	TEXTURE_FILTER_ANISOTROPIC_4X
+	TEXTURE_FILTER_ANISOTROPIC_8X
+	TEXTURE_FILTER_ANISOTROPIC_16X
+}
+enum TextureWrap {
+	TEXTURE_WRAP_REPEAT = 0
+	TEXTURE_WRAP_CLAMP
+	TEXTURE_WRAP_MIRROR_REPEAT
+	TEXTURE_WRAP_MIRROR_CLAMP
+}
+enum TextureWrap {
+	TEXTURE_WRAP_REPEAT = 0
+	TEXTURE_WRAP_CLAMP
+	TEXTURE_WRAP_MIRROR_REPEAT
+	TEXTURE_WRAP_MIRROR_CLAMP
+}
+enum CubemapLayout {
+	CUBEMAP_LAYOUT_AUTO_DETECT = 0
+	CUBEMAP_LAYOUT_LINE_VERTICAL
+	CUBEMAP_LAYOUT_LINE_HORIZONTAL
+	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR
+	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE
+	CUBEMAP_LAYOUT_PANORAMA
+}
+enum CubemapLayout {
+	CUBEMAP_LAYOUT_AUTO_DETECT = 0
+	CUBEMAP_LAYOUT_LINE_VERTICAL
+	CUBEMAP_LAYOUT_LINE_HORIZONTAL
+	CUBEMAP_LAYOUT_CROSS_THREE_BY_FOUR
+	CUBEMAP_LAYOUT_CROSS_FOUR_BY_THREE
+	CUBEMAP_LAYOUT_PANORAMA
+}
+enum FontType {
+	FONT_DEFAULT = 0
+	FONT_BITMAP
+	FONT_SDF
+}
+enum FontType {
+	FONT_DEFAULT = 0
+	FONT_BITMAP
+	FONT_SDF
+}
+enum BlendMode {
+	BLEND_ALPHA = 0
+	BLEND_ADDITIVE
+	BLEND_MULTIPLIED
+	BLEND_ADD_COLORS
+	BLEND_SUBTRACT_COLORS
+	BLEND_ALPHA_PREMULTIPLY
+	BLEND_CUSTOM
+	BLEND_CUSTOM_SEPARATE
+}
+enum BlendMode {
+	BLEND_ALPHA = 0
+	BLEND_ADDITIVE
+	BLEND_MULTIPLIED
+	BLEND_ADD_COLORS
+	BLEND_SUBTRACT_COLORS
+	BLEND_ALPHA_PREMULTIPLY
+	BLEND_CUSTOM
+	BLEND_CUSTOM_SEPARATE
+}
+enum Gesture {
+	GESTURE_NONE = 0
+	GESTURE_TAP = 1
+	GESTURE_DOUBLETAP = 2
+	GESTURE_HOLD = 4
+	GESTURE_DRAG = 8
+	GESTURE_SWIPE_RIGHT = 16
+	GESTURE_SWIPE_LEFT = 32
+	GESTURE_SWIPE_UP = 64
+	GESTURE_SWIPE_DOWN = 128
+	GESTURE_PINCH_IN = 256
+	GESTURE_PINCH_OUT = 512
+}
+enum Gesture {
+	GESTURE_NONE = 0
+	GESTURE_TAP = 1
+	GESTURE_DOUBLETAP = 2
+	GESTURE_HOLD = 4
+	GESTURE_DRAG = 8
+	GESTURE_SWIPE_RIGHT = 16
+	GESTURE_SWIPE_LEFT = 32
+	GESTURE_SWIPE_UP = 64
+	GESTURE_SWIPE_DOWN = 128
+	GESTURE_PINCH_IN = 256
+	GESTURE_PINCH_OUT = 512
+}
+enum CameraMode {
+	CAMERA_CUSTOM = 0
+	CAMERA_FREE
+	CAMERA_ORBITAL
+	CAMERA_FIRST_PERSON
+	CAMERA_THIRD_PERSON
+}
+enum CameraMode {
+	CAMERA_CUSTOM = 0
+	CAMERA_FREE
+	CAMERA_ORBITAL
+	CAMERA_FIRST_PERSON
+	CAMERA_THIRD_PERSON
+}
+enum CameraProjection {
+	CAMERA_PERSPECTIVE = 0
+	CAMERA_ORTHOGRAPHIC
+}
+enum CameraProjection {
+	CAMERA_PERSPECTIVE = 0
+	CAMERA_ORTHOGRAPHIC
+}
+enum NPatchLayout {
+	NPATCH_NINE_PATCH = 0
+	NPATCH_THREE_PATCH_VERTICAL
+	NPATCH_THREE_PATCH_HORIZONTAL
+}
+enum NPatchLayout {
+	NPATCH_NINE_PATCH = 0
+	NPATCH_THREE_PATCH_VERTICAL
+	NPATCH_THREE_PATCH_HORIZONTAL
+}
 extern InitWindow(width : int, height : int, title : i8 ptr) void;
-extern WindowShouldClose() int;
 extern CloseWindow() void;
+extern WindowShouldClose() int;
 extern IsWindowReady() int;
 extern IsWindowFullscreen() int;
 extern IsWindowHidden() int;
@@ -308,6 +953,7 @@ extern IsWindowState() int;
 extern SetWindowState(flags : u32) void;
 extern ClearWindowState(flags : u32) void;
 extern ToggleFullscreen() void;
+extern ToggleBorderlessWindowed() void;
 extern MaximizeWindow() void;
 extern MinimizeWindow() void;
 extern RestoreWindow() void;
@@ -317,8 +963,10 @@ extern SetWindowTitle(title : i8 ptr) void;
 extern SetWindowPosition(x : int, y : int) void;
 extern SetWindowMonitor(monitor : int) void;
 extern SetWindowMinSize(width : int, height : int) void;
+extern SetWindowMaxSize(width : int, height : int) void;
 extern SetWindowSize(width : int, height : int) void;
 extern SetWindowOpacity(opacity : float) void;
+extern SetWindowFocused() void;
 extern GetWindowHandle() void ptr;
 extern GetScreenWidth() int;
 extern GetScreenHeight() int;
@@ -339,9 +987,6 @@ extern SetClipboardText(text : i8 ptr) void;
 extern GetClipboardText() i8 ptr;
 extern EnableEventWaiting() void;
 extern DisableEventWaiting() void;
-extern SwapScreenBuffer() void;
-extern PollInputEvents() void;
-extern WaitTime(seconds : double) void;
 extern ShowCursor() void;
 extern HideCursor() void;
 extern IsCursorHidden() int;
@@ -385,20 +1030,29 @@ extern GetScreenToWorld2D(position : struct Vector2, camera : struct Camera2D) s
 extern GetWorldToScreenEx(position : struct Vector3, camera : struct Camera, width : int, height : int) struct Vector2;
 extern GetWorldToScreen2D(position : struct Vector2, camera : struct Camera2D) struct Vector2;
 extern SetTargetFPS(fps : int) void;
-extern GetFPS() int;
 extern GetFrameTime() float;
 extern GetTime() double;
-extern GetRandomValue(min : int, max : int) int;
+extern GetFPS() int;
+extern SwapScreenBuffer() void;
+extern PollInputEvents() void;
+extern WaitTime(seconds : double) void;
 extern SetRandomSeed(seed : u32) void;
+extern GetRandomValue(min : int, max : int) int;
+extern LoadRandomSequence(count : u32, min : int, max : int) int ptr;
+extern UnloadRandomSequence(sequence : int ptr) void;
 extern TakeScreenshot(fileName : i8 ptr) void;
 extern SetConfigFlags(flags : u32) void;
-extern TraceLog(logLevel : int, text : i8 ptr ...) void;
+extern OpenURL(url : i8 ptr) void;
+extern TraceLog(logLevel : int, text : i8 ptr, ...) void;
 extern SetTraceLogLevel(logLevel : int) void;
 extern MemAlloc(size : u32) void ptr;
-extern MemRealloc(pointer : void ptr, size : u32) void ptr;
-extern MemFree(pointer : void ptr) void;
-extern OpenURL(url : i8 ptr) void;
-extern LoadFileData(fileName : i8 ptr, bytesRead : u32 ptr) i8 ptr;
+extern MemRealloc(ptr : void ptr, size : u32) void ptr;
+extern MemFree(ptr : void ptr) void;
+extern SetLoadFileDataCallback(callback : func (void ptr, int ptr) u8 ptr) void;
+extern SetSaveFileDataCallback(callback : func (i8 ptr, void ptr, int) u8) void;
+extern SetLoadFileTextCallback(callback : func (i8 ptr) i8 ptr) void;
+extern SetSaveFileTextCallback(callback : func(i8 ptr, i8 ptr) u8) void;
+extern LoadFileData(fileName : i8 ptr, dataSize : int ptr) i8 ptr;
 extern UnloadFileData(data : i8 ptr) void;
 extern SaveFileData() int;
 extern ExportDataAsCode() int;
@@ -419,7 +1073,7 @@ extern GetApplicationDirectory() i8 ptr;
 extern ChangeDirectory() int;
 extern IsPathFile() int;
 extern LoadDirectoryFiles(dirPath : i8 ptr) struct FilePathList;
-extern LoadDirectoryFilesEx(basePath : i8 ptr, filter : i8 ptr, scanSubdirs : bool) struct FilePathList;
+extern LoadDirectoryFilesEx(basePath : i8 ptr, filter : i8 ptr, scanSubdirs : u8) struct FilePathList;
 extern UnloadDirectoryFiles(files : struct FilePathList) void;
 extern IsFileDropped() int;
 extern LoadDroppedFiles() struct FilePathList;
@@ -429,23 +1083,36 @@ extern CompressData(data : i8 ptr, dataSize : int, compDataSize : int ptr) i8 pt
 extern DecompressData(compData : i8 ptr, compDataSize : int, dataSize : int ptr) i8 ptr;
 extern EncodeDataBase64(data : i8 ptr, dataSize : int, outputSize : int ptr) i8 ptr;
 extern DecodeDataBase64(data : i8 ptr, outputSize : int ptr) i8 ptr;
-extern IsKeyPressed(key : int) bool;
-extern IsKeyDown(key : int) bool;
-extern IsKeyReleased(key : int) int;
-extern IsKeyUp(key : int) int;
-extern SetExitKey(key : int) void;
+extern LoadAutomationEventList(fileName : i8 ptr) struct AutomationEventList;
+extern UnloadAutomationEventList(list : struct AutomationEventList ptr) void;
+extern ExportAutomationEventList() int;
+extern SetAutomationEventList(list : struct AutomationEventList ptr) void;
+extern SetAutomationEventBaseFrame(frame : int) void;
+extern StartAutomationEventRecording() void;
+extern StopAutomationEventRecording() void;
+extern PlayAutomationEvent(event : struct AutomationEvent) void;
+extern IsKeyPressed() int;
+extern IsKeyPressedRepeat() int;
+extern IsKeyDown() int;
+extern IsKeyReleased() int;
+extern IsKeyUp() int;
 extern GetKeyPressed() int;
 extern GetCharPressed() int;
-extern IsGamepadAvailable(gamepad : int) int;
+extern SetExitKey(key : int) void;
+extern IsGamepadAvailable() int;
 extern GetGamepadName(gamepad : int) i8 ptr;
-extern IsGamepadButtonPressed(gamepad : int, button : int) int;
-extern IsGamepadButtonDown(gamepad : int, button : int) int;
-extern IsGamepadButtonReleased(gamepad : int, button : int) int;
+extern IsGamepadButtonPressed() int;
+extern IsGamepadButtonDown() int;
+extern IsGamepadButtonReleased() int;
+extern IsGamepadButtonUp() int;
+extern GetGamepadButtonPressed() int;
 extern GetGamepadAxisCount(gamepad : int) int;
 extern GetGamepadAxisMovement(gamepad : int, axis : int) float;
 extern SetGamepadMappings(mappings : i8 ptr) int;
-extern IsMouseButtonPressed(button : int) int;
-extern IsMouseButtonUp(button : int) int;
+extern IsMouseButtonPressed() int;
+extern IsMouseButtonDown() int;
+extern IsMouseButtonReleased() int;
+extern IsMouseButtonUp() int;
 extern GetMouseX() int;
 extern GetMouseY() int;
 extern GetMousePosition() struct Vector2;
@@ -462,7 +1129,7 @@ extern GetTouchPosition(index : int) struct Vector2;
 extern GetTouchPointId(index : int) int;
 extern GetTouchPointCount() int;
 extern SetGesturesEnabled(flags : u32) void;
-extern IsGestureDetected(gesture : u32) int;
+extern IsGestureDetected() int;
 extern GetGestureDetected() int;
 extern GetGestureHoldDuration() float;
 extern GetGestureDragVector() struct Vector2;
@@ -477,16 +1144,15 @@ extern DrawPixelV(position : struct Vector2, color : struct Color) void;
 extern DrawLine(startPosX : int, startPosY : int, endPosX : int, endPosY : int, color : struct Color) void;
 extern DrawLineV(startPos : struct Vector2, endPos : struct Vector2, color : struct Color) void;
 extern DrawLineEx(startPos : struct Vector2, endPos : struct Vector2, thick : float, color : struct Color) void;
-extern DrawLineBezier(startPos : struct Vector2, endPos : struct Vector2, thick : float, color : struct Color) void;
-extern DrawLineBezierQuad(startPos : struct Vector2, endPos : struct Vector2, controlPos : struct Vector2, thick : float, color : struct Color) void;
-extern DrawLineBezierCubic(startPos : struct Vector2, endPos : struct Vector2, startControlPos : struct Vector2, endControlPos : struct Vector2, thick : float, color : struct Color) void;
 extern DrawLineStrip(points : struct Vector2 ptr, pointCount : int, color : struct Color) void;
+extern DrawLineBezier(startPos : struct Vector2, endPos : struct Vector2, thick : float, color : struct Color) void;
 extern DrawCircle(centerX : int, centerY : int, radius : float, color : struct Color) void;
 extern DrawCircleSector(center : struct Vector2, radius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
 extern DrawCircleSectorLines(center : struct Vector2, radius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
 extern DrawCircleGradient(centerX : int, centerY : int, radius : float, color1 : struct Color, color2 : struct Color) void;
 extern DrawCircleV(center : struct Vector2, radius : float, color : struct Color) void;
 extern DrawCircleLines(centerX : int, centerY : int, radius : float, color : struct Color) void;
+extern DrawCircleLinesV(center : struct Vector2, radius : float, color : struct Color) void;
 extern DrawEllipse(centerX : int, centerY : int, radiusH : float, radiusV : float, color : struct Color) void;
 extern DrawEllipseLines(centerX : int, centerY : int, radiusH : float, radiusV : float, color : struct Color) void;
 extern DrawRing(center : struct Vector2, innerRadius : float, outerRadius : float, startAngle : float, endAngle : float, segments : int, color : struct Color) void;
@@ -509,30 +1175,47 @@ extern DrawTriangleStrip(points : struct Vector2 ptr, pointCount : int, color : 
 extern DrawPoly(center : struct Vector2, sides : int, radius : float, rotation : float, color : struct Color) void;
 extern DrawPolyLines(center : struct Vector2, sides : int, radius : float, rotation : float, color : struct Color) void;
 extern DrawPolyLinesEx(center : struct Vector2, sides : int, radius : float, rotation : float, lineThick : float, color : struct Color) void;
-extern CheckCollisionRecs(rec1 : struct Rectangle, rec2 : struct Rectangle) int;
-extern CheckCollisionCircles(center1 : struct Vector2, radius1 : float, center2 : struct Vector2) int;
-extern CheckCollisionCircleRec(center : struct Vector2, radius : float, rec : struct Rectangle) int;
-extern CheckCollisionPointRec(point : struct Vector2, rec : struct Rectangle) int;
-extern CheckCollisionPointCircle(point : struct Vector2, center : struct Vector2, radius : float) int;
-extern CheckCollisionPointTriangle(point : struct Vector2, p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2) int;
-extern CheckCollisionPointPoly(point : struct Vector2, points : struct Vector2 ptr, pointCount : int) int;
-extern CheckCollisionLines(startPos1 : struct Vector2, endPos1 : struct Vector2, startPos2 : struct Vector2, endPos2 : struct Vector2, collisionPoint : struct Vector2 ptr) int;
-extern CheckCollisionPointLine(point : struct Vector2, p1 : struct Vector2, p2 : struct Vector2, threshold : int) int;
+extern DrawSplineLinear(points : struct Vector2 ptr, pointCount : int, thick : float, color : struct Color) void;
+extern DrawSplineBasis(points : struct Vector2 ptr, pointCount : int, thick : float, color : struct Color) void;
+extern DrawSplineCatmullRom(points : struct Vector2 ptr, pointCount : int, thick : float, color : struct Color) void;
+extern DrawSplineBezierQuadratic(points : struct Vector2 ptr, pointCount : int, thick : float, color : struct Color) void;
+extern DrawSplineBezierCubic(points : struct Vector2 ptr, pointCount : int, thick : float, color : struct Color) void;
+extern DrawSplineSegmentLinear(p1 : struct Vector2, p2 : struct Vector2, thick : float, color : struct Color) void;
+extern DrawSplineSegmentBasis(p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2, p4 : struct Vector2, thick : float, color : struct Color) void;
+extern DrawSplineSegmentCatmullRom(p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2, p4 : struct Vector2, thick : float, color : struct Color) void;
+extern DrawSplineSegmentBezierQuadratic(p1 : struct Vector2, c2 : struct Vector2, p3 : struct Vector2, thick : float, color : struct Color) void;
+extern DrawSplineSegmentBezierCubic(p1 : struct Vector2, c2 : struct Vector2, c3 : struct Vector2, p4 : struct Vector2, thick : float, color : struct Color) void;
+extern GetSplinePointLinear(startPos : struct Vector2, endPos : struct Vector2, t : float) struct Vector2;
+extern GetSplinePointBasis(p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2, p4 : struct Vector2, t : float) struct Vector2;
+extern GetSplinePointCatmullRom(p1 : struct Vector2, p2 : struct Vector2, p3 : struct Vector2, p4 : struct Vector2, t : float) struct Vector2;
+extern GetSplinePointBezierQuad(p1 : struct Vector2, c2 : struct Vector2, p3 : struct Vector2, t : float) struct Vector2;
+extern GetSplinePointBezierCubic(p1 : struct Vector2, c2 : struct Vector2, c3 : struct Vector2, p4 : struct Vector2, t : float) struct Vector2;
+extern CheckCollisionRecs() int;
+extern CheckCollisionCircles() int;
+extern CheckCollisionCircleRec() int;
+extern CheckCollisionPointRec() int;
+extern CheckCollisionPointCircle() int;
+extern CheckCollisionPointTriangle() int;
+extern CheckCollisionPointPoly() int;
+extern CheckCollisionLines() int;
+extern CheckCollisionPointLine() int;
 extern GetCollisionRec(rec1 : struct Rectangle, rec2 : struct Rectangle) struct Rectangle;
 extern LoadImage(fileName : i8 ptr) struct Image;
 extern LoadImageRaw(fileName : i8 ptr, width : int, height : int, format : int, headerSize : int) struct Image;
+extern LoadImageSvg(fileNameOrString : i8 ptr, width : int, height : int) struct Image;
 extern LoadImageAnim(fileName : i8 ptr, frames : int ptr) struct Image;
 extern LoadImageFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int) struct Image;
 extern LoadImageFromTexture(texture : struct Texture2D) struct Image;
 extern LoadImageFromScreen() struct Image;
-extern IsImageReady(image : struct Image) int;
+extern IsImageReady() int;
 extern UnloadImage(image : struct Image) void;
-extern ExportImage(image : struct Image, fileName : i8 ptr) int;
-extern ExportImageAsCode(image : struct Image, fileName : i8 ptr) int;
+extern ExportImage() int;
+extern ExportImageToMemory(image : struct Image, fileType : i8 ptr, fileSize : int ptr) i8 ptr;
+extern ExportImageAsCode() int;
 extern GenImageColor(width : int, height : int, color : struct Color) struct Image;
-extern GenImageGradientV(width : int, height : int, top : struct Color, bottom : struct Color) struct Image;
-extern GenImageGradientH(width : int, height : int, left : struct Color, right : struct Color) struct Image;
+extern GenImageGradientLinear(width : int, height : int, direction : int, start : struct Color, end : struct Color) struct Image;
 extern GenImageGradientRadial(width : int, height : int, density : float, inner : struct Color, outer : struct Color) struct Image;
+extern GenImageGradientSquare(width : int, height : int, density : float, inner : struct Color, outer : struct Color) struct Image;
 extern GenImageChecked(width : int, height : int, checksX : int, checksY : int, col1 : struct Color, col2 : struct Color) struct Image;
 extern GenImageWhiteNoise(width : int, height : int, factor : float) struct Image;
 extern GenImagePerlinNoise(width : int, height : int, offsetX : int, offsetY : int, scale : float) struct Image;
@@ -557,6 +1240,7 @@ extern ImageMipmaps(image : struct Image ptr) void;
 extern ImageDither(image : struct Image ptr, rBpp : int, gBpp : int, bBpp : int, aBpp : int) void;
 extern ImageFlipVertical(image : struct Image ptr) void;
 extern ImageFlipHorizontal(image : struct Image ptr) void;
+extern ImageRotate(image : struct Image ptr, degrees : int) void;
 extern ImageRotateCW(image : struct Image ptr) void;
 extern ImageRotateCCW(image : struct Image ptr) void;
 extern ImageColorTint(image : struct Image ptr, color : struct Color) void;
@@ -591,8 +1275,9 @@ extern LoadTexture(fileName : i8 ptr) struct Texture2D;
 extern LoadTextureFromImage(image : struct Image) struct Texture2D;
 extern LoadTextureCubemap(image : struct Image, layout : int) struct TextureCubemap;
 extern LoadRenderTexture(width : int, height : int) struct RenderTexture2D;
-extern IsTextureReady(texture : struct Texture2D) int;
+extern IsTextureReady() int;
 extern UnloadTexture(texture : struct Texture2D) void;
+extern IsRenderTextureReady() int;
 extern UnloadRenderTexture(target : struct RenderTexture2D) void;
 extern UpdateTexture(texture : struct Texture2D, pixels : void ptr) void;
 extern UpdateTextureRec(texture : struct Texture2D, rec : struct Rectangle, pixels : void ptr) void;
@@ -622,21 +1307,22 @@ extern SetPixelColor(dstPtr : void ptr, color : struct Color, format : int) void
 extern GetPixelDataSize(width : int, height : int, format : int) int;
 extern GetFontDefault() struct Font;
 extern LoadFont(fileName : i8 ptr) struct Font;
-extern LoadFontEx(fileName : i8 ptr, fontSize : int, fontChars : int ptr, glyphCount : int) struct Font;
+extern LoadFontEx(fileName : i8 ptr, fontSize : int, codepoints : int ptr, codepointCount : int) struct Font;
 extern LoadFontFromImage(image : struct Image, key : struct Color, firstChar : int) struct Font;
-extern LoadFontFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int, fontSize : int, fontChars : int ptr, glyphCount : int) struct Font;
-extern IsFontReady(font : struct Font) int;
-extern LoadFontData(fileData : i8 ptr, dataSize : int, fontSize : int, fontChars : int ptr, glyphCount : int, type : int) struct GlyphInfo ptr;
-extern GenImageFontAtlas(chars : struct GlyphInfo ptr, recs : struct Rectangle ptr ptr, glyphCount : int, fontSize : int, padding : int, packMethod : int) struct Image;
-extern UnloadFontData(chars : struct GlyphInfo ptr, glyphCount : int) void;
+extern LoadFontFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int, fontSize : int, codepoints : int ptr, codepointCount : int) struct Font;
+extern IsFontReady() int;
+extern LoadFontData(fileData : i8 ptr, dataSize : int, fontSize : int, codepoints : int ptr, codepointCount : int, type : int) struct GlyphInfo ptr;
+extern GenImageFontAtlas(glyphs : struct GlyphInfo ptr, glyphRecs : struct Rectangle ptr ptr, glyphCount : int, fontSize : int, padding : int, packMethod : int) struct Image;
+extern UnloadFontData(glyphs : struct GlyphInfo ptr, glyphCount : int) void;
 extern UnloadFont(font : struct Font) void;
-extern ExportFontAsCode(font : struct Font, fileName : i8 ptr) int;
+extern ExportFontAsCode() int;
 extern DrawFPS(posX : int, posY : int) void;
 extern DrawText(text : i8 ptr, posX : int, posY : int, fontSize : int, color : struct Color) void;
 extern DrawTextEx(font : struct Font, text : i8 ptr, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
 extern DrawTextPro(font : struct Font, text : i8 ptr, position : struct Vector2, origin : struct Vector2, rotation : float, fontSize : float, spacing : float, tint : struct Color) void;
 extern DrawTextCodepoint(font : struct Font, codepoint : int, position : struct Vector2, fontSize : float, tint : struct Color) void;
-extern DrawTextCodepoints(font : struct Font, codepoints : int ptr, count : int, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
+extern DrawTextCodepoints(font : struct Font, codepoints : int ptr, codepointCount : int, position : struct Vector2, fontSize : float, spacing : float, tint : struct Color) void;
+extern SetTextLineSpacing(spacing : int) void;
 extern MeasureText(text : i8 ptr, fontSize : int) int;
 extern MeasureTextEx(font : struct Font, text : i8 ptr, fontSize : float, spacing : float) struct Vector2;
 extern GetGlyphIndex(font : struct Font, codepoint : int) int;
@@ -652,9 +1338,9 @@ extern GetCodepointNext(text : i8 ptr, codepointSize : int ptr) int;
 extern GetCodepointPrevious(text : i8 ptr, codepointSize : int ptr) int;
 extern CodepointToUTF8(codepoint : int, utf8Size : int ptr) i8 ptr;
 extern TextCopy(dst : i8 ptr, src : i8 ptr) int;
-extern TextIsEqual(text1 : i8 ptr, text2 : i8 ptr) int;
+extern TextIsEqual() int;
 extern TextLength(text : i8 ptr) u32;
-// extern TextFormat(text : i8 ptr, ...) i8 ptr;
+extern TextFormat(text : i8 ptr, ...) i8 ptr;
 extern TextSubtext(text : i8 ptr, position : int, length : int) i8 ptr;
 extern TextReplace(text : i8 ptr, replace : i8 ptr, by : i8 ptr) i8 ptr;
 extern TextInsert(text : i8 ptr, insert : i8 ptr, position : int) i8 ptr;
@@ -689,7 +1375,7 @@ extern DrawRay(ray : struct Ray, color : struct Color) void;
 extern DrawGrid(slices : int, spacing : float) void;
 extern LoadModel(fileName : i8 ptr) struct Model;
 extern LoadModelFromMesh(mesh : struct Mesh) struct Model;
-extern IsModelReady(model : struct Model) int;
+extern IsModelReady() int;
 extern UnloadModel(model : struct Model) void;
 extern GetModelBoundingBox(model : struct Model) struct BoundingBox;
 extern DrawModel(model : struct Model, position : struct Vector3, scale : float, tint : struct Color) void;
@@ -705,7 +1391,7 @@ extern UpdateMeshBuffer(mesh : struct Mesh, index : int, data : void ptr, dataSi
 extern UnloadMesh(mesh : struct Mesh) void;
 extern DrawMesh(mesh : struct Mesh, material : struct Material, transform : struct Matrix) void;
 extern DrawMeshInstanced(mesh : struct Mesh, material : struct Material, transforms : struct Matrix ptr, instances : int) void;
-extern ExportMesh(mesh : struct Mesh, fileName : i8 ptr) int;
+extern ExportMesh() int;
 extern GetMeshBoundingBox(mesh : struct Mesh) struct BoundingBox;
 extern GenMeshTangents(mesh : struct Mesh ptr) void;
 extern GenMeshPoly(sides : int, radius : float) struct Mesh;
@@ -721,18 +1407,18 @@ extern GenMeshHeightmap(heightmap : struct Image, size : struct Vector3) struct 
 extern GenMeshCubicmap(cubicmap : struct Image, cubeSize : struct Vector3) struct Mesh;
 extern LoadMaterials(fileName : i8 ptr, materialCount : int ptr) struct Material ptr;
 extern LoadMaterialDefault() struct Material;
-extern IsMaterialReady(material : struct Material) int;
+extern IsMaterialReady() int;
 extern UnloadMaterial(material : struct Material) void;
 extern SetMaterialTexture(material : struct Material ptr, mapType : int, texture : struct Texture2D) void;
 extern SetModelMeshMaterial(model : struct Model ptr, meshId : int, materialId : int) void;
-extern LoadModelAnimations(fileName : i8 ptr, animCount : u32 ptr) struct ModelAnimation ptr;
+extern LoadModelAnimations(fileName : i8 ptr, animCount : int ptr) struct ModelAnimation ptr;
 extern UpdateModelAnimation(model : struct Model, anim : struct ModelAnimation, frame : int) void;
 extern UnloadModelAnimation(anim : struct ModelAnimation) void;
-extern UnloadModelAnimations(animations : struct ModelAnimation ptr, count : u32) void;
-extern IsModelAnimationValid(model : struct Model, anim : struct ModelAnimation) int;
-extern CheckCollisionSpheres(center1 : struct Vector3, radius1 : float, center2 : struct Vector3, radius2 : float) int;
-extern CheckCollisionBoxes(box1 : struct BoundingBox, box2 : struct BoundingBox) int;
-extern CheckCollisionBoxSphere(box : struct BoundingBox, center : struct Vector3, radius : float) int;
+extern UnloadModelAnimations(animations : struct ModelAnimation ptr, animCount : int) void;
+extern IsModelAnimationValid() int;
+extern CheckCollisionSpheres() int;
+extern CheckCollisionBoxes() int;
+extern CheckCollisionBoxSphere() int;
 extern GetRayCollisionSphere(ray : struct Ray, center : struct Vector3, radius : float) struct RayCollision;
 extern GetRayCollisionBox(ray : struct Ray, box : struct BoundingBox) struct RayCollision;
 extern GetRayCollisionMesh(ray : struct Ray, mesh : struct Mesh, transform : struct Matrix) struct RayCollision;
@@ -742,22 +1428,25 @@ extern InitAudioDevice() void;
 extern CloseAudioDevice() void;
 extern IsAudioDeviceReady() int;
 extern SetMasterVolume(volume : float) void;
+extern GetMasterVolume() float;
 extern LoadWave(fileName : i8 ptr) struct Wave;
 extern LoadWaveFromMemory(fileType : i8 ptr, fileData : i8 ptr, dataSize : int) struct Wave;
-extern IsWaveReady(wave : struct Wave) int;
+extern IsWaveReady() int;
 extern LoadSound(fileName : i8 ptr) struct Sound;
 extern LoadSoundFromWave(wave : struct Wave) struct Sound;
-extern IsSoundReady(sound : struct Sound) int;
+extern LoadSoundAlias(source : struct Sound) struct Sound;
+extern IsSoundReady() int;
 extern UpdateSound(sound : struct Sound, data : void ptr, sampleCount : int) void;
 extern UnloadWave(wave : struct Wave) void;
 extern UnloadSound(sound : struct Sound) void;
-extern ExportWave(wave : struct Wave, fileName : i8 ptr) int;
-extern ExportWaveAsCode(wave : struct Wave, fileName : i8 ptr) int;
+extern UnloadSoundAlias(alias : struct Sound) void;
+extern ExportWave() int;
+extern ExportWaveAsCode() int;
 extern PlaySound(sound : struct Sound) void;
 extern StopSound(sound : struct Sound) void;
 extern PauseSound(sound : struct Sound) void;
 extern ResumeSound(sound : struct Sound) void;
-extern IsSoundPlaying(sound : struct Sound) int;
+extern IsSoundPlaying() int;
 extern SetSoundVolume(sound : struct Sound, volume : float) void;
 extern SetSoundPitch(sound : struct Sound, pitch : float) void;
 extern SetSoundPan(sound : struct Sound, pan : float) void;
@@ -768,10 +1457,10 @@ extern LoadWaveSamples(wave : struct Wave) float ptr;
 extern UnloadWaveSamples(samples : float ptr) void;
 extern LoadMusicStream(fileName : i8 ptr) struct Music;
 extern LoadMusicStreamFromMemory(fileType : i8 ptr, data : i8 ptr, dataSize : int) struct Music;
-extern IsMusicReady(music : struct Music) int;
+extern IsMusicReady() int;
 extern UnloadMusicStream(music : struct Music) void;
 extern PlayMusicStream(music : struct Music) void;
-extern IsMusicStreamPlaying(music : struct Music) int;
+extern IsMusicStreamPlaying() int;
 extern UpdateMusicStream(music : struct Music) void;
 extern StopMusicStream(music : struct Music) void;
 extern PauseMusicStream(music : struct Music) void;
@@ -783,16 +1472,21 @@ extern SetMusicPan(music : struct Music, pan : float) void;
 extern GetMusicTimeLength(music : struct Music) float;
 extern GetMusicTimePlayed(music : struct Music) float;
 extern LoadAudioStream(sampleRate : u32, sampleSize : u32, channels : u32) struct AudioStream;
-extern IsAudioStreamReady(stream : struct AudioStream) int;
+extern IsAudioStreamReady() int;
 extern UnloadAudioStream(stream : struct AudioStream) void;
 extern UpdateAudioStream(stream : struct AudioStream, data : void ptr, frameCount : int) void;
-extern IsAudioStreamProcessed(stream : struct AudioStream) int;
+extern IsAudioStreamProcessed() int;
 extern PlayAudioStream(stream : struct AudioStream) void;
 extern PauseAudioStream(stream : struct AudioStream) void;
 extern ResumeAudioStream(stream : struct AudioStream) void;
-extern IsAudioStreamPlaying(stream : struct AudioStream) int;
+extern IsAudioStreamPlaying() int;
 extern StopAudioStream(stream : struct AudioStream) void;
 extern SetAudioStreamVolume(stream : struct AudioStream, volume : float) void;
 extern SetAudioStreamPitch(stream : struct AudioStream, pitch : float) void;
 extern SetAudioStreamPan(stream : struct AudioStream, pan : float) void;
 extern SetAudioStreamBufferSizeDefault(size : int) void;
+extern SetAudioStreamCallback(stream : struct AudioStream, callback : func (void ptr, u32) void) void;
+extern AttachAudioStreamProcessor(stream : struct AudioStream, processor : func (void ptr, u32) void) void;
+extern DetachAudioStreamProcessor(stream : struct AudioStream, processor : func (void ptr, u32) void) void;
+extern AttachAudioMixedProcessor(processor : func (void ptr, u32) void) void;
+extern DetachAudioMixedProcessor(processor : func (void ptr, u32) void) void;
